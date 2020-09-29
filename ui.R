@@ -1,6 +1,7 @@
 shiny::shinyUI(
 	shinydashboard::dashboardPage(
 		skin = "blue",
+		title = "ED-COVID",
 		shinydashboard::dashboardHeader(
 			title = "Main title"
 		),
@@ -138,6 +139,24 @@ shiny::shinyUI(
 				)
 			)
 		),
-		shinydashboard::dashboardBody()
+		shinydashboard::dashboardBody(
+			shinydashboard::tabItems(
+				shinydashboard::tabItem(
+					tabName = "description",
+					shiny::includeHTML(
+						"html/description.html"
+					)
+				),
+				shinydashboard::tabItem(
+					tabName = "calculation"
+				),
+				shinydashboard::tabItem(
+					tabName = "model"
+				),
+				shinydashboard::tabItem(
+					tabName = "performance"
+				)
+			)
+		)
 	)
 )
