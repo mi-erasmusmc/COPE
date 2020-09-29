@@ -1,9 +1,21 @@
 shiny::shinyUI(
 	shinydashboard::dashboardPage(
-		skin = "blue",
+		skin = "black",
 		title = "ED-COVID",
 		shinydashboard::dashboardHeader(
-			title = "Main title"
+			title = "Main title",
+			tags$li(
+				div(
+					img(
+						src = 'logo_erasmus.png',
+						title = "Erasmus MC", 
+						height = "46", 
+						width = "110px"
+					),
+					style = "padding-top:2px; padding-bottom:0px; padding-right:8px"
+				),
+				class = "dropdown"
+			)
 		),
 		shinydashboard::dashboardSidebar(
 			shinydashboard::sidebarMenu(
