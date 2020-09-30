@@ -21,14 +21,19 @@ shiny::shinyUI(
 			shinydashboard::sidebarMenu(
 				id = "menu1",
 				shinydashboard::menuItem(
-					tabName = "description",
-					text = "Description",
-					icon = shiny::icon("home")
-				),
-				shinydashboard::menuItem(
 					tabName = "calculation",
 					text = "Calculate risk",
 					icon = shiny::icon("calculator")
+				),
+				shinydashboard::menuItem(
+					tabName = "description",
+					text = "Description",
+					icon = shiny::icon("align-justify")
+				),
+				shinydashboard::menuItem(
+					tabName = "population",
+					text = "Population",
+					icon = shiny::icon("users")
 				),
 				shinydashboard::menuItem(
 					tabName = "model",
@@ -161,6 +166,9 @@ shiny::shinyUI(
 				),
 				shinydashboard::tabItem(
 					tabName = "calculation"
+				),
+				shinydashboard::tabItem(
+					tabName = "population"
 				),
 				shinydashboard::tabItem(
 					tabName = "model"
