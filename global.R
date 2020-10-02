@@ -9,10 +9,14 @@ betaCoefficients <- readRDS(
 
 baselineHazard <- 0.06336707
 
-fifth1 <- 0.021538467
-fifth2 <- 0.051167435
-fifth3 <- 0.096543873
-fifth4 <- 0.179968413
+fifth1 <- 0.021538467*100
+fifth2 <- 0.051167435*100
+fifth3 <- 0.096543873*100
+fifth4 <- 0.179968413*100
+
+table1 <- readRDS(
+	"Data/table1.rds"
+)
 
 calculateRisk <- function(
 	age,
@@ -34,10 +38,11 @@ calculateRisk <- function(
 		log(leucocytes)
 	)
 	
-	prediction <- 1 - exp(-baselineHazard*exp(covariateVector%*%betaCoefficients))
+	prediction <- 100*(1 - exp(-baselineHazard*exp(covariateVector%*%betaCoefficients)))
 	
-	return(c(prediction))
+	return(c(round(prediction, 2)))
 }
+
 
 hline <- function(y = 0, color = "black") {
 	list(
@@ -47,8 +52,23 @@ hline <- function(y = 0, color = "black") {
 		xref = "paper",
 		y0 = y,
 		y1 = y,
+		layer = "below",
 		line = list(
 			color = color
 		)
 	)
+}
+
+addInfo <- function(item, infoId) {
+	infoTag <- tags$small(
+		class = "badge pull-right action-button",
+		style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
+		type = "button",
+		id = infoId,
+		"i"
+	)
+	
+	item$children[[1]]$children <- append(item$children[[1]]$children, list(infoTag))
+	
+	return(item)
 }

@@ -57,10 +57,6 @@ shiny::shinyUI(
 				),
 				shinydashboard::tabItem(
 					tabName = "calculation",
-					# plotly::plotlyOutput(
-					# 	outputId = "calculationPlot",
-					# 	width = "50%"
-					# )
 					shiny::fluidRow(
 						shinydashboard::box(
 							status = "primary",
@@ -123,8 +119,8 @@ shiny::shinyUI(
 									shiny::numericInput(
 										inputId = "ldh",
 										label = "LDH",
-										value = 50,
-										min = 20,
+										value = 5,
+										min = 0,
 										max = 100
 									),
 									title = "<b>LDH</b>",
@@ -140,7 +136,7 @@ shiny::shinyUI(
 									shiny::numericInput(
 										inputId = "crp",
 										label = "CRP",
-										value = 50,
+										value = 2,
 										min = 20,
 										max = 100
 									),
@@ -178,10 +174,12 @@ shiny::shinyUI(
 							)
 						)
 					),
-					shiny::fluidRow(
+					shiny::conditionalPanel(
+						condition = "input.calculatePredictionButton",
 						shinydashboard::box(
 							status = "primary",
 							title = "Risk prediction",
+							# solidHeader = TRUE,
 							width = 4,
 							height = "470px",
 							plotly::plotlyOutput(
@@ -191,6 +189,7 @@ shiny::shinyUI(
 						shinydashboard::box(
 							status = "primary",
 							title = "Result explanation",
+							# solidHeader = TRUE,
 							width = 8,
 							height = "470px",
 							textOutput(
@@ -200,7 +199,54 @@ shiny::shinyUI(
 					)
 				),
 				shinydashboard::tabItem(
-					tabName = "population"
+					tabName = "population",
+					shiny::fluidRow(
+						shinydashboard::box(
+							status = "primary",
+							width = 6,
+							collapsible = TRUE,
+							solidHeader = TRUE,
+							title = "Overall",
+							DT::dataTableOutput(
+								outputId = "table1Overall"
+							)
+						),
+						shinydashboard::box(
+							status = "primary",
+							width = 6,
+							collapsible = TRUE,
+							collapsed = TRUE,
+							solidHeader = TRUE,
+							title = "Dead",
+							DT::dataTableOutput(
+								outputId = "table1Dead"
+							)
+						)
+					),
+					shiny::fluidRow(
+						shinydashboard::box(
+							status = "primary",
+							width = 6,
+							collapsible = TRUE,
+							collapsed = TRUE,
+							solidHeader = TRUE,
+							title = "In hospital",
+							DT::dataTableOutput(
+								outputId = "table1InHospital"
+							)
+						),
+						shinydashboard::box(
+							status = "primary",
+							width = 6,
+							collapsible = TRUE,
+							collapsed = TRUE,
+							solidHeader = TRUE,
+							title = "Discharged",
+							DT::dataTableOutput(
+								outputId = "table1Discharged"
+							)
+						)
+					)
 				),
 				shinydashboard::tabItem(
 					tabName = "model"
