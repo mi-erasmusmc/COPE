@@ -59,6 +59,28 @@ hline <- function(y = 0, color = "black") {
 	)
 }
 
+addRectangle <- function(
+	y0,
+	y1,
+	fillcolor,
+	opacity = .1
+) {
+	list(
+		type = "rect",
+		fillcolor = fillcolor,
+		line = list(
+			color = fillcolor,
+			width = 0
+		),
+		layer = "below",
+		opacity = opacity,
+		x0 = .5,
+		x1 = 1.5,
+		y0 = y0,
+		y1 = y1
+	)
+}
+
 addInfo <- function(item, infoId) {
 	infoTag <- tags$small(
 		class = "badge pull-right action-button",

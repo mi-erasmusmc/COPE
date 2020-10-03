@@ -38,7 +38,7 @@ shiny::shinyServer(
 		output$calculationPlot <- plotly::renderPlotly(
 			{
 				plotData <- data.frame(
-					x = "Mortality",
+					x = 1,
 					y = currentPrediction()
 				)
 				
@@ -46,8 +46,7 @@ shiny::shinyServer(
 					plotly::plot_ly(
 						x = ~x,
 						y = ~y,
-						type = "bar",
-						opacity = .8
+						type = "bar"
 					) %>%
 					plotly::add_text(
 						text = ~paste(
@@ -64,21 +63,46 @@ shiny::shinyServer(
 					) %>%
 					plotly::layout(
 						shapes = list(
-							hline(
-								fifth1,
-								color = "green"
+							# hline(
+							# 	fifth1,
+							# 	color = "green"
+							# ),
+							# hline(
+							# 	fifth2,
+							# 	color = "yellow"
+							# ),
+							# hline(
+							# 	fifth3,
+							# 	color = "orange"
+							# ),
+							# hline(
+							# 	fifth4,
+							# 	color = "red"
+							# ),
+							addRectangle(
+								y0 = 0,
+								y1 = fifth1,
+								fillcolor = "green"
 							),
-							hline(
-								fifth2,
-								color = "yellow"
+							addRectangle(
+								y0 = fifth1,
+								y1 = fifth2,
+								fillcolor = "yellow"
 							),
-							hline(
-								fifth3,
-								color = "orange"
+							addRectangle(
+								y0 = fifth2,
+								y1 = fifth3,
+								fillcolor = "orange"
 							),
-							hline(
-								fifth4,
-								color = "red"
+							addRectangle(
+								y0 = fifth3,
+								y1 = fifth4,
+								fillcolor = "red"
+							),
+							addRectangle(
+								y0 = fifth4,
+								y1 = 30,
+								fillcolor = "purple"
 							)
 						),
 						yaxis = list(
