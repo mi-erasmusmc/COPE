@@ -200,52 +200,8 @@ shiny::shinyUI(
 				),
 				shinydashboard::tabItem(
 					tabName = "population",
-					shiny::fluidRow(
-						shinydashboard::box(
-							status = "primary",
-							width = 6,
-							collapsible = TRUE,
-							solidHeader = TRUE,
-							title = "Overall",
-							DT::dataTableOutput(
-								outputId = "table1Overall"
-							)
-						),
-						shinydashboard::box(
-							status = "primary",
-							width = 6,
-							collapsible = TRUE,
-							collapsed = TRUE,
-							solidHeader = TRUE,
-							title = "Dead",
-							DT::dataTableOutput(
-								outputId = "table1Dead"
-							)
-						)
-					),
-					shiny::fluidRow(
-						shinydashboard::box(
-							status = "primary",
-							width = 6,
-							collapsible = TRUE,
-							collapsed = TRUE,
-							solidHeader = TRUE,
-							title = "In hospital",
-							DT::dataTableOutput(
-								outputId = "table1InHospital"
-							)
-						),
-						shinydashboard::box(
-							status = "primary",
-							width = 6,
-							collapsible = TRUE,
-							collapsed = TRUE,
-							solidHeader = TRUE,
-							title = "Discharged",
-							DT::dataTableOutput(
-								outputId = "table1Discharged"
-							)
-						)
+					DT::dataTableOutput(
+						outputId = "table1"
 					)
 				),
 				shinydashboard::tabItem(

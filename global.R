@@ -1,7 +1,4 @@
-library(shinyBS)
-library(plotly)
 library(tidyverse)
-library(dashboardthemes)
 
 betaCoefficients <- readRDS(
 	"Data/coefficients.rds"
@@ -14,9 +11,23 @@ fifth2 <- 0.051167435*100
 fifth3 <- 0.096543873*100
 fifth4 <- 0.179968413*100
 
-table1 <- readRDS(
-	"Data/table1.rds"
-)
+table1Long <- readRDS(
+  "Data/table1Long.rds"
+) %>%
+	dplyr::mutate(
+		status = factor(
+			status,
+			levels = c(
+				"overall",
+				"dead",
+				"discharged",
+				"hospital"
+			)
+		)
+	) %>%
+	dplyr::arrange(
+		status
+	)
 
 calculateRisk <- function(
 	age,

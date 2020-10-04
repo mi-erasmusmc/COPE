@@ -125,12 +125,13 @@ shiny::shinyServer(
 			}
 		)
 		
-		output$table1Overall <- DT::renderDataTable(
+		output$table1 <- DT::renderDataTable(
 			{
 				table <- DT::datatable(
-					data = table1$overall,
+					data     = table1Long,
 					colnames = c(
-						"",
+						"Status",
+						"Variable",
 						"Mean",
 						"SD",
 						"Median",
@@ -138,61 +139,15 @@ shiny::shinyServer(
 						"Max",
 						"Missing",
 						"%"
+					),
+					options = list(
+						pageLength = 6
 					)
 				)
+				
+				return(table)
 			}
 		)
 		
-		output$table1Discharged <- DT::renderDataTable(
-			{
-				table <- DT::datatable(
-					data = table1$discharged,
-					colnames = c(
-						"",
-						"Mean",
-						"SD",
-						"Median",
-						"Min",
-						"Max",
-						"Missing",
-						"%"
-					)
-				)
-			}
-		)
-		output$table1InHospital <- DT::renderDataTable(
-			{
-				table <- DT::datatable(
-					data = table1$hospital,
-					colnames = c(
-						"",
-						"Mean",
-						"SD",
-						"Median",
-						"Min",
-						"Max",
-						"Missing",
-						"%"
-					)
-				)
-			}
-		)
-		output$table1Dead<- DT::renderDataTable(
-			{
-				table <- DT::datatable(
-					data = table1$dead,
-					colnames = c(
-						"",
-						"Mean",
-						"SD",
-						"Median",
-						"Min",
-						"Max",
-						"Missing",
-						"%"
-					)
-				)
-			}
-		)
 	}
 )
