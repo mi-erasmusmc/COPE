@@ -1,16 +1,16 @@
 shiny::shinyUI(
 	shinydashboard::dashboardPage(
-		skin = "black",
-		title = "ED-COVID",
+		skin      = "black",
+		title     = "ED-COVID",
 		shinydashboard::dashboardHeader(
 			title = "Main title",
 			tags$li(
 				div(
 					img(
-						src = 'logo_erasmus.png',
-						title = "Erasmus MC", 
+						src    = 'logo_erasmus.png',
+						title  = "Erasmus MC", 
 						height = "46", 
-						width = "110px"
+						width  = "110px"
 					),
 					style = "padding-top:2px; padding-bottom:0px; padding-right:8px"
 				),
@@ -22,28 +22,28 @@ shiny::shinyUI(
 				id = "menu1",
 				shinydashboard::menuItem(
 					tabName = "calculation",
-					text = "Calculate risk",
-					icon = shiny::icon("calculator")
+					text    = "Calculate risk",
+					icon    = shiny::icon("calculator")
 				),
 				shinydashboard::menuItem(
 					tabName = "description",
-					text = "Description",
-					icon = shiny::icon("align-justify")
+					text    = "Description",
+					icon    = shiny::icon("align-justify")
 				),
 				shinydashboard::menuItem(
 					tabName = "population",
-					text = "Population",
-					icon = shiny::icon("users")
+					text    = "Population",
+					icon    = shiny::icon("users")
 				),
 				shinydashboard::menuItem(
 					tabName = "model",
-					text = "Model",
-					icon = shiny::icon("clipboard")
+					text    = "Model",
+					icon    = shiny::icon("clipboard")
 				),
 				shinydashboard::menuItem(
 					tabName = "performance",
-					text = "Performance",
-					icon = shiny::icon("tasks")
+					text    = "Performance",
+					icon    = shiny::icon("tasks")
 				)
 			)
 		),
@@ -52,7 +52,7 @@ shiny::shinyUI(
 				shinydashboard::tabItem(
 					tabName = "description",
 					shiny::includeHTML(
-						"html/description.html"
+						"html/description_text.html"
 					)
 				),
 				shinydashboard::tabItem(
@@ -60,56 +60,56 @@ shiny::shinyUI(
 					shiny::fluidRow(
 						shinydashboard::box(
 							status = "primary",
-							width = 12,
+							width  = 12,
 							shiny::splitLayout(
 								shinyBS::popify(
 									shiny::numericInput(
 										inputId = "age",
-										label = "Age",
-										value = 75,
-										min = 20,
-										max = 100
+										label   = "Age",
+										value   = 75,
+										min     = 20,
+										max     = 100
 									),
-									title = "<b>Age</b>",
+									title   = "<b>Age</b>",
 									content = shiny::includeHTML(
-										path = "html/age.html"
+										path = "html/calculation_age.html"
 									),
 									placement = "bottom",
-									options = list(
+									options   = list(
 										container = "body"
 									)
 								),
 								shinyBS::popify(
 									shiny::numericInput(
 										inputId = "respiratoryAge",
-										label = "Respiratory age",
-										value = 30,
-										min = 0,
-										max = 100
+										label   = "Respiratory age",
+										value   = 30,
+										min     = 0,
+										max     = 100
 									),
-									title = "<b>Respiratory age</b>",
+									title   = "<b>Respiratory age</b>",
 									content = shiny::includeHTML(
-										path = "html/respiratoryAge.html"
+										path = "html/calculation_respiratoryAge.html"
 									),
 									placement = "bottom",
-									options = list(
+									options   = list(
 										container = "body"
 									)
 								),
 								shinyBS::popify(
 									shiny::numericInput(
 										inputId = "oxygenSaturation",
-										label = "Oxygen saturation",
-										value = 100,
-										min = 80,
-										max = 100
+										label   = "Oxygen saturation",
+										value   = 100,
+										min     = 80,
+										max     = 100
 									),
-									title = "<b>Oxygen saturation</b>",
+									title   = "<b>Oxygen saturation</b>",
 									content = shiny::includeHTML(
-										path = "html/oxygenSaturation.html"
+										path = "html/calculation_oxygenSaturation.html"
 									),
 									placement = "bottom",
-									options = list(
+									options   = list(
 										container = "body"
 									)
 								)
@@ -118,59 +118,59 @@ shiny::shinyUI(
 								shinyBS::popify(
 									shiny::numericInput(
 										inputId = "ldh",
-										label = "LDH",
-										value = 5,
-										min = 0,
-										max = 100
+										label   = "LDH",
+										value   = 5,
+										min     = 0,
+										max     = 100
 									),
-									title = "<b>LDH</b>",
+									title   = "<b>LDH</b>",
 									content = shiny::includeHTML(
-										path = "html/ldh.html"
+										path = "html/calculation_ldh.html"
 									),
 									placement = "bottom",
-									options = list(
+									options   = list(
 										container = "body"
 									)
 								),
 								shinyBS::popify(
 									shiny::numericInput(
 										inputId = "crp",
-										label = "CRP",
-										value = 2,
-										min = 20,
-										max = 100
+										label   = "CRP",
+										value   = 2,
+										min     = 20,
+										max     = 100
 									),
-									title = "<b>CRP</b>",
+									title   = "<b>CRP</b>",
 									content = shiny::includeHTML(
-										path = "html/crp.html"
+										path = "html/calculation_crp.html"
 									),
 									placement = "bottom",
-									options = list(
+									options   = list(
 										container = "body"
 									)
 								),
 								shinyBS::popify(
 									shiny::numericInput(
 										inputId = "leucocyteCount",
-										label = "Leucocyte count",
-										value = 50,
-										min = 20,
-										max = 100
+										label   = "Leucocyte count",
+										value   = 50,
+										min     = 20,
+										max     = 100
 									),
-									title = "<b>Leucocyte count",
+									title   = "<b>Leucocyte count",
 									content = shiny::includeHTML(
-										"html/leucocyteCount.html"
+										"html/calculation_leucocyteCount.html"
 									),
 									placement = "bottom",
-									options = list(
+									options   = list(
 										container = "body"
 									)
 								)
 							),
 							shiny::actionButton(
 								inputId = "calculatePredictionButton",
-								label = "Calculate",
-								icon = shiny::icon("calculator")
+								label   = "Calculate",
+								icon    = shiny::icon("calculator")
 							)
 						)
 					),
@@ -178,9 +178,8 @@ shiny::shinyUI(
 						condition = "input.calculatePredictionButton",
 						shinydashboard::box(
 							status = "primary",
-							title = "Risk prediction",
-							# solidHeader = TRUE,
-							width = 4,
+							title  = "Risk prediction",
+							width  = 4,
 							height = "470px",
 							plotly::plotlyOutput(
 								outputId = "calculationPlot"
@@ -188,9 +187,8 @@ shiny::shinyUI(
 						),
 						shinydashboard::box(
 							status = "primary",
-							title = "Result explanation",
-							# solidHeader = TRUE,
-							width = 8,
+							title  = "Result explanation",
+							width  = 8,
 							height = "470px",
 							textOutput(
 								outputId = "resultExplanationBox"
@@ -208,7 +206,28 @@ shiny::shinyUI(
 					tabName = "model"
 				),
 				shinydashboard::tabItem(
-					tabName = "performance"
+					tabName = "performance",
+					shiny::fluidRow(
+						shinydashboard::box(
+							title  = "Evaluation metrics",
+							status = "primary",
+							width  = 6,
+							height = "700px",
+							shiny::includeHTML(
+								"html/performance_auc.html"
+							)
+						),
+						shinydashboard::box(
+							title  = "Calibration plot",
+							status = "primary",
+							width  = 6,
+							height = "700px",
+							plotly::plotlyOutput(
+								outputId = "calibrationPlot",
+								height = "500px"
+							)
+						)
+					)
 				)
 			)
 		)

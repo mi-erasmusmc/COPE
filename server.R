@@ -3,19 +3,18 @@ shiny::shinyServer(
 		input,
 		output,
 		session
-	)
-	{
+	) {
 		currentPrediction <- shiny::eventReactive(
 			input$calculatePredictionButton,
 			{
 				prediction <- calculateRisk(
-					age = input$age,
-					rr = input$respiratoryAge,
-					saturation = input$oxygenSaturation,
-					crp = input$crp,
-					ldh = input$ldh,
-					leucocytes = input$leucocyteCount,
-					baselineHazard = baselineHazard,
+					age              = input$age,
+					rr               = input$respiratoryAge,
+					saturation       = input$oxygenSaturation,
+					crp              = input$crp,
+					ldh              = input$ldh,
+					leucocytes       = input$leucocyteCount,
+					baselineHazard   = baselineHazard,
 					betaCoefficients = betaCoefficients
 				)
 				
@@ -28,12 +27,21 @@ shiny::shinyServer(
 			}
 		)
 		
-		# prediction <- shiny::eventReactive(
-		# 	input$calculatePredictionButton,
-		# 	{
-		# 		currentPrediction()
-		# 	}
-		# )
+		riskFifth <- shiny::reactive(
+			{
+				riskFifths <- c(
+					0,
+					fifth1,
+					fifth2,
+					fifth3,
+					fifth4,
+					100,
+					currentPrediction()
+				)
+				
+				return(rank(riskFifths)[7])
+			}
+		)
 		
 		output$calculationPlot <- plotly::renderPlotly(
 			{
@@ -46,63 +54,83 @@ shiny::shinyServer(
 					plotly::plot_ly(
 						x = ~x,
 						y = ~y,
-						type = "bar"
+						type = "bar",
+						marker = list(
+							line = list(
+								width = 2,
+								color = "black"
+							)
+						)
 					) %>%
-					plotly::add_text(
+					plotly::add_annotations(
 						text = ~paste(
 							y,
 							"%"
 						),
-						hoverinfo = "none",
-						textposition = "top",
-						showlegend = FALSE,
-						textfont = list(
-							size = 20,
+						bgcolor     = colorMap$color[riskFifth() - 1],
+						bordercolor = "black",
+						borderwidth = 1,
+						showarrow   = FALSE,
+						standoff    = 4,
+						hoverinfo   = "none",
+						showlegend  = FALSE,
+						font        = list(
+							size = 18,
 							color = "black"
 						)
 					) %>%
 					plotly::layout(
 						shapes = list(
-							# hline(
-							# 	fifth1,
-							# 	color = "green"
-							# ),
-							# hline(
-							# 	fifth2,
-							# 	color = "yellow"
-							# ),
-							# hline(
-							# 	fifth3,
-							# 	color = "orange"
-							# ),
-							# hline(
-							# 	fifth4,
-							# 	color = "red"
-							# ),
-							addRectangle(
-								y0 = 0,
-								y1 = fifth1,
-								fillcolor = "green"
+							hline(
+								fifth1,
+								color = "black"
+							),
+							hline(
+								fifth2,
+								color = "black"
+							),
+							hline(
+								fifth3,
+								color = "black"
+							),
+							hline(
+								fifth4,
+								color = "black"
 							),
 							addRectangle(
-								y0 = fifth1,
-								y1 = fifth2,
-								fillcolor = "yellow"
+								x0        = 0,
+								x1        = 2,
+								y0        = 0,
+								y1        = fifth1,
+								fillcolor = colorMap$color[1]
 							),
 							addRectangle(
-								y0 = fifth2,
-								y1 = fifth3,
-								fillcolor = "orange"
+								x0        = 0,
+								x1        = 2,
+								y0        = fifth1,
+								y1        = fifth2,
+								fillcolor = colorMap$color[2]
 							),
 							addRectangle(
-								y0 = fifth3,
-								y1 = fifth4,
-								fillcolor = "red"
+								x0        = 0,
+								x1        = 2,
+								y0        = fifth2,
+								y1        = fifth3,
+								fillcolor = colorMap$color[3]
 							),
 							addRectangle(
-								y0 = fifth4,
-								y1 = 30,
-								fillcolor = "purple"
+								x0        = 0,
+								x1        = 2,
+								y0        = fifth3,
+								y1        = fifth4,
+								fillcolor = colorMap$color[4]
+							),
+							addRectangle(
+								x0        = 0,
+								x1        = 2,
+								y0        = fifth4,
+								y1        = 30,
+								fillcolor = colorMap$color[5]
 							)
 						),
 						yaxis = list(
@@ -149,5 +177,78 @@ shiny::shinyServer(
 			}
 		)
 		
+		output$calibrationPlot <- plotly::renderPlotly( {
+			plotly::plot_ly(data = calibrationData) %>%
+				plotly::add_trace(
+					x     = c(0, .5), 
+					y     = c(0, .5),
+					mode  = 'lines',
+					line  = list(dash = "dash"),
+					color = I('black'),
+					type  ='scatter'
+				) %>%
+				plotly::add_trace(
+					data    = calibrationData,
+					x       = ~predicted,
+					y       = ~observed,
+					type    = "scatter",
+					marker  = list(color = "blue"),
+					error_y = list(
+						type       = "data",
+						array      = calibrationData$upper - calibrationData$observed,
+						arrayminus = calibrationData$observed - calibrationData$lower,
+						color      = "blue"
+					)
+				) %>%
+				plotly::layout(
+					shapes = list(
+						addRectangle(
+							x0        = 0,
+							x1        = fifth1 / 100,
+							y0        = 0,
+							y1        = .5,
+							fillcolor = colorMap$color[1]
+						),
+						addRectangle(
+							x0        = fifth1 / 100,
+							x1        = fifth2 / 100,
+							y0        = 0,
+							y1        = .5,
+							fillcolor = colorMap$color[2]
+						),
+						addRectangle(
+							x0        = fifth2 / 100,
+							x1        = fifth3 / 100,
+							y0        = 0,
+							y1        = .5,
+							fillcolor = colorMap$color[3]
+						),
+						addRectangle(
+							x0        = fifth3 / 100,
+							x1        = fifth4 / 100,
+							y0        = 0,
+							y1        = .5,
+							fillcolor = colorMap$color[4]
+						),
+						addRectangle(
+							x0        = fifth4 / 100,
+							x1        = .5,
+							y0        = 0,
+							y1        = .5,
+							fillcolor = colorMap$color[5]
+						)
+					),
+					title = "External validation",
+					xaxis = list(
+						title = "Predicted 21-day mortality",
+						range = c(-.01, .5)
+					),
+					yaxis = list(
+						title = "Observed 21-day mortality",
+						range = c(-.01, .5)
+					),
+					showlegend = FALSE
+				)
+		} )
 	}
 )
