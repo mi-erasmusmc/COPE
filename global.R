@@ -1,4 +1,5 @@
 library(tidyverse)
+library(shinyBS)
 
 betaCoefficients <- readRDS(
 	"Data/coefficients.rds"

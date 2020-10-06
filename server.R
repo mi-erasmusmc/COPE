@@ -141,7 +141,8 @@ shiny::shinyServer(
 							)
 						),
 						xaxis = list(
-							title = ""
+							title = "Mortality",
+							showticklabels = FALSE
 						)
 					)
 			}
