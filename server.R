@@ -44,6 +44,8 @@ shiny::shinyServer(
 				fifthsIcu <- fifths$icu
 				prediction <- currentPrediction()
 				
+
+				
 				riskFifths <- c(
 					0,
 					fifthsIcu[1],
@@ -61,6 +63,13 @@ shiny::shinyServer(
 		output$calculationPlotMortality <- plotly::renderPlotly(
 			{
 				prediction <- currentPrediction()
+				
+				rangeMax <- ifelse(
+					test = prediction$icu > 25 || prediction$mortality > 25,
+					yes  = 100,
+					no   = 30
+				)
+				
 				predictionData <- data.frame(
 					x = 1,
 					y = prediction$mortality
@@ -71,7 +80,8 @@ shiny::shinyServer(
 					fifths         = fifths$mortality,
 					riskFifth      = riskFifthMortality(),
 					colorMap       = colorMap,
-					title          = "Mortality"
+					title          = "Mortality",
+					rangeMax       = rangeMax
 				)
 				
 			}
@@ -80,6 +90,13 @@ shiny::shinyServer(
 		output$calculationPlotIcu <- plotly::renderPlotly(
 			{
 				prediction <- currentPrediction()
+				
+				rangeMax <- ifelse(
+					test = prediction$icu > 25 || prediction$mortality > 25,
+					yes  = 100,
+					no   = 30
+				)
+				
 				predictionData <- data.frame(
 					x = 1,
 					y = prediction$icu
@@ -90,7 +107,8 @@ shiny::shinyServer(
 					fifths         = fifths$icu,
 					riskFifth      = riskFifthIcu(),
 					colorMap       = colorMap,
-					title          = "ICU"
+					title          = "ICU",
+					rangeMax       = rangeMax
 				)
 				
 			}

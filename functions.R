@@ -168,14 +168,15 @@ plotRiskPrediction <- function(
 	fifths,
 	riskFifth,
 	colorMap,
-	title
+	title,
+	rangeMax
 ) {
 	
-	rangeMax <- 30   # the range of y axis
-	
-	if (predictionData$y > 25) {
-		rangeMax <- 100
-	}
+	# rangeMax <- 30   # the range of y axis
+	# 
+	# if (predictionData$y > 25) {
+	# 	rangeMax <- 100
+	# }
 
 	predictionData	%>%
 		plotly::plot_ly(
