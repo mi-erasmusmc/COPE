@@ -9,142 +9,90 @@ shiny::shinyServer(
 			{
 				prediction <- calculateRisk(
 					age              = input$age,
-					rr               = input$respiratoryAge,
-					saturation       = input$oxygenSaturation,
+					rr               = input$respiratoryRate,
 					crp              = input$crp,
 					ldh              = input$ldh,
-					leucocytes       = input$leucocyteCount,
 					baselineHazard   = baselineHazard,
 					betaCoefficients = betaCoefficients
 				)
 				
-				return(
-					round(
-						prediction,
-						4
-					)
-				)
+				return(prediction)
 			}
 		)
 		
-		riskFifth <- shiny::reactive(
+		riskFifthMortality <- shiny::reactive(
 			{
+				fifthsMortality <- fifths$mortality
+				prediction <- currentPrediction()
+				
 				riskFifths <- c(
 					0,
-					fifth1,
-					fifth2,
-					fifth3,
-					fifth4,
+					fifthsMortality[1],
+					fifthsMortality[2],
+					fifthsMortality[3],
+					fifthsMortality[4],
 					100,
-					currentPrediction()
+					prediction$mortality
 				)
 				
 				return(rank(riskFifths)[7])
 			}
 		)
 		
-		output$calculationPlot <- plotly::renderPlotly(
+		riskFifthIcu <- shiny::reactive(
 			{
-				plotData <- data.frame(
-					x = 1,
-					y = currentPrediction()
+				fifthsIcu <- fifths$icu
+				prediction <- currentPrediction()
+				
+				riskFifths <- c(
+					0,
+					fifthsIcu[1],
+					fifthsIcu[2],
+					fifthsIcu[3],
+					fifthsIcu[4],
+					100,
+					prediction$icu
 				)
 				
-				plotData %>%
-					plotly::plot_ly(
-						x = ~x,
-						y = ~y,
-						type = "bar",
-						marker = list(
-							line = list(
-								width = 2,
-								color = "black"
-							)
-						)
-					) %>%
-					plotly::add_annotations(
-						text = ~paste(
-							y,
-							"%"
-						),
-						bgcolor     = colorMap$color[riskFifth() - 1],
-						bordercolor = "black",
-						borderwidth = 1,
-						showarrow   = FALSE,
-						standoff    = 4,
-						hoverinfo   = "none",
-						showlegend  = FALSE,
-						font        = list(
-							size = 18,
-							color = "black"
-						)
-					) %>%
-					plotly::layout(
-						shapes = list(
-							hline(
-								fifth1,
-								color = "black"
-							),
-							hline(
-								fifth2,
-								color = "black"
-							),
-							hline(
-								fifth3,
-								color = "black"
-							),
-							hline(
-								fifth4,
-								color = "black"
-							),
-							addRectangle(
-								x0        = 0,
-								x1        = 2,
-								y0        = 0,
-								y1        = fifth1,
-								fillcolor = colorMap$color[1]
-							),
-							addRectangle(
-								x0        = 0,
-								x1        = 2,
-								y0        = fifth1,
-								y1        = fifth2,
-								fillcolor = colorMap$color[2]
-							),
-							addRectangle(
-								x0        = 0,
-								x1        = 2,
-								y0        = fifth2,
-								y1        = fifth3,
-								fillcolor = colorMap$color[3]
-							),
-							addRectangle(
-								x0        = 0,
-								x1        = 2,
-								y0        = fifth3,
-								y1        = fifth4,
-								fillcolor = colorMap$color[4]
-							),
-							addRectangle(
-								x0        = 0,
-								x1        = 2,
-								y0        = fifth4,
-								y1        = 30,
-								fillcolor = colorMap$color[5]
-							)
-						),
-						yaxis = list(
-							title = "",
-							range = c(
-								0,
-								30
-							)
-						),
-						xaxis = list(
-							title = "Mortality",
-							showticklabels = FALSE
-						)
-					)
+				return(rank(riskFifths)[7])
+			}
+		)
+		
+		output$calculationPlotMortality <- plotly::renderPlotly(
+			{
+				prediction <- currentPrediction()
+				predictionData <- data.frame(
+					x = 1,
+					y = prediction$mortality
+				)
+				
+				plotRiskPrediction(
+					predictionData = predictionData,
+					fifths         = fifths$mortality,
+					riskFifth      = riskFifthMortality(),
+					colorMap       = colorMap,
+					title          = "Mortality"
+				)
+				
+			}
+		)
+		
+		output$calculationPlotIcu <- plotly::renderPlotly(
+			{
+				prediction <- currentPrediction()
+				predictionData <- data.frame(
+					x = 1,
+					y = prediction$icu
+				)
+				
+				plotRiskPrediction(
+					predictionData = predictionData,
+					fifths         = fifths$icu,
+					riskFifth      = riskFifthIcu(),
+					colorMap       = colorMap,
+					title          = "ICU"
+				)
+				
 			}
 		)
 		
@@ -186,7 +134,7 @@ shiny::shinyServer(
 					mode  = 'lines',
 					line  = list(dash = "dash"),
 					color = I('black'),
-					type  ='scatter'
+					type  = 'scatter'
 				) %>%
 				plotly::add_trace(
 					data    = calibrationData,
