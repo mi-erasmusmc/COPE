@@ -27,8 +27,8 @@ createModelMatrix <- function(
 				time,
 				age,
 				log(rr),
-				log(ldh),
-				log(crp)
+				log(crp),
+				log(ldh)
 			),
 			nrow = 1
 		) 
@@ -344,6 +344,22 @@ plotCalibration <- function(
 					fillcolor = colorMap$color[5]
 				)
 			),
+			# annotations = list(
+			# 	text = "a=0.10\nb=0.90\nc=.83",
+			# 	x = .45,
+			# 	y = .1,
+			# 	bgcolor     = "white",
+			# 	bordercolor = "black",
+			# 	borderwidth = 1,
+			# 	showarrow   = FALSE,
+			# 	standoff    = 4,
+			# 	hoverinfo   = "none",
+			# 	showlegend  = FALSE,
+			# 	font        = list(
+			# 		size = 12,
+			# 		color = "black"
+			# 	)
+			# ),
 			title = title,
 			xaxis = list(
 				title = "Predicted 21-day mortality",

@@ -273,10 +273,10 @@ shiny::shinyUI(
 								title  = "Evaluation metrics",
 								status = "primary",
 								width  = 12,
-								height = "300px",
-								shiny::includeHTML(
-									"html/performance_auc.html"
-								)
+								height = "300px"
+								# shiny::includeHTML(
+								# 	"html/performance_text.html"
+								# )
 							)
 						)
 					)
