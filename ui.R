@@ -60,7 +60,7 @@ shiny::shinyUI(
 					shinydashboard::box(
 						status = "primary",
 						width  = 2,
-						height = "500px",
+						height = "450px",
 						shinyBS::popify(
 							shiny::numericInput(
 								inputId = "age",
@@ -137,25 +137,27 @@ shiny::shinyUI(
 							status = "primary",
 							title  = "Mortality risk prediction",
 							width  = 5,
-							height = "500px",
+							height = "440px",
 							plotly::plotlyOutput(
-								outputId = "calculationPlotMortality"
+								outputId = "calculationPlotMortality",
+								height = "380px"
 							)
 						),
 						shinydashboard::box(
 							status = "primary",
 							title  = "ICU risk prediction",
 							width  = 5,
-							height = "500px",
+							height = "440px",
 							plotly::plotlyOutput(
-								outputId = "calculationPlotIcu"
+								outputId = "calculationPlotIcu",
+								height = "380px"
 							)
 						),
 						shinydashboard::box(
 							status = "primary",
 							title  = "Result explanation",
 							width  = 12,
-							height = "300px",
+							height = "240px",
 							textOutput(
 								outputId = "resultExplanationBox"
 							)
