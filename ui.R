@@ -138,9 +138,12 @@ shiny::shinyUI(
 							title  = "Mortality risk prediction",
 							width  = 5,
 							height = "450px",
-							plotly::plotlyOutput(
-								outputId = "calculationPlotMortality",
-								height = "380px"
+							shinycssloaders::withSpinner(
+								type = 4,
+								plotly::plotlyOutput(
+									outputId = "calculationPlotMortality",
+									height = "380px"
+								)
 							)
 						),
 						shinydashboard::box(
@@ -148,9 +151,12 @@ shiny::shinyUI(
 							title  = "ICU risk prediction",
 							width  = 5,
 							height = "450px",
-							plotly::plotlyOutput(
-								outputId = "calculationPlotIcu",
-								height = "380px"
+							shinycssloaders::withSpinner(
+								type = 4,
+								plotly::plotlyOutput(
+									outputId = "calculationPlotIcu",
+									height = "380px"
+								)
 							)
 						),
 						shinydashboard::box(
@@ -182,50 +188,59 @@ shiny::shinyUI(
 								title  = "Calibration plot for: Center 1",
 								status = "primary",
 								width  = 3,
-								height = "390px",
-								plotly::plotlyOutput(
-									outputId = "calibrationMortalityCenter1",
-									height = "300px"
+								height = "350px",
+								shinycssloaders::withSpinner(
+									type = 4,
+									plotly::plotlyOutput(
+										outputId = "calibrationMortalityCenter1",
+										height = "280px"
+									)
 								)
 							),
 							shinydashboard::box(
 								title  = "Center 2",
 								status = "primary",
 								width  = 3,
-								height = "390px",
-								plotly::plotlyOutput(
-									outputId = "calibrationMortalityCenter2",
-									height = "300px"
+								height = "350px",
+								shinycssloaders::withSpinner(
+									type = 4,
+									plotly::plotlyOutput(
+										outputId = "calibrationMortalityCenter2",
+										height = "280px"
+									)
 								)
 							),
 							shinydashboard::box(
 								title  = "Center 3",
 								status = "primary",
 								width  = 3,
-								height = "390px",
-								plotly::plotlyOutput(
-									outputId = "calibrationMortalityCenter3",
-									height = "300px"
+								height = "350px",
+								shinycssloaders::withSpinner(
+									type = 4,
+									plotly::plotlyOutput(
+										outputId = "calibrationMortalityCenter3",
+										height = "280px"
+									)
 								)
 							),
 							shinydashboard::box(
 								title  = "Center 4",
 								status = "primary",
 								width  = 3,
-								height = "390px",
-								plotly::plotlyOutput(
-									outputId = "calibrationMortalityCenter4",
-									height = "300px"
+								height = "350px",
+								shinycssloaders::withSpinner(
+									type = 4,
+									plotly::plotlyOutput(
+										outputId = "calibrationMortalityCenter4",
+										height = "280px"
+									)
 								)
 							),
 							shinydashboard::box(
 								title  = "Evaluation metrics",
 								status = "primary",
 								width  = 12,
-								height = "300px",
-								shiny::includeHTML(
-									"html/performance_auc.html"
-								)
+								height = "280px"
 							)
 						),
 						shiny::tabPanel(
