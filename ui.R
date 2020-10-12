@@ -137,7 +137,7 @@ shiny::shinyUI(
 							status = "primary",
 							title  = "Mortality risk prediction",
 							width  = 5,
-							height = "440px",
+							height = "450px",
 							plotly::plotlyOutput(
 								outputId = "calculationPlotMortality",
 								height = "380px"
@@ -147,7 +147,7 @@ shiny::shinyUI(
 							status = "primary",
 							title  = "ICU risk prediction",
 							width  = 5,
-							height = "440px",
+							height = "450px",
 							plotly::plotlyOutput(
 								outputId = "calculationPlotIcu",
 								height = "380px"
@@ -175,24 +175,93 @@ shiny::shinyUI(
 				),
 				shinydashboard::tabItem(
 					tabName = "performance",
-					shiny::fluidRow(
-						shinydashboard::box(
-							title  = "Evaluation metrics",
-							status = "primary",
-							width  = 6,
-							height = "700px",
-							shiny::includeHTML(
-								"html/performance_auc.html"
+					shiny::tabsetPanel(
+						shiny::tabPanel(
+							title = "Mortaltiy",
+							shinydashboard::box(
+								title  = "Calibration plot for: Center 1",
+								status = "primary",
+								width  = 3,
+								height = "390px",
+								plotly::plotlyOutput(
+									outputId = "calibrationMortalityCenter1",
+									height = "300px"
+								)
+							),
+							shinydashboard::box(
+								title  = "Center 2",
+								status = "primary",
+								width  = 3,
+								height = "390px",
+								plotly::plotlyOutput(
+									outputId = "calibrationMortalityCenter2",
+									height = "300px"
+								)
+							),
+							shinydashboard::box(
+								title  = "Center 3",
+								status = "primary",
+								width  = 3,
+								height = "390px",
+								plotly::plotlyOutput(
+									outputId = "calibrationMortalityCenter3",
+									height = "300px"
+								)
+							),
+							shinydashboard::box(
+								title  = "Center 4",
+								status = "primary",
+								width  = 3,
+								height = "390px",
+								plotly::plotlyOutput(
+									outputId = "calibrationMortalityCenter4",
+									height = "300px"
+								)
+							),
+							shinydashboard::box(
+								title  = "Evaluation metrics",
+								status = "primary",
+								width  = 12,
+								height = "300px",
+								shiny::includeHTML(
+									"html/performance_auc.html"
+								)
 							)
 						),
-						shinydashboard::box(
-							title  = "Calibration plot",
-							status = "primary",
-							width  = 6,
-							height = "700px",
-							plotly::plotlyOutput(
-								outputId = "calibrationPlot",
-								height = "500px"
+						shiny::tabPanel(
+							title = "ICU",
+							shinydashboard::box(
+								title  = "Calibration plot",
+								status = "primary",
+								width  = 3,
+								height = "390px"
+							),
+							shinydashboard::box(
+								title  = "Calibration plot",
+								status = "primary",
+								width  = 3,
+								height = "390px"
+							),
+							shinydashboard::box(
+								title  = "Calibration plot",
+								status = "primary",
+								width  = 3,
+								height = "390px"
+							),
+							shinydashboard::box(
+								title  = "Calibration plot",
+								status = "primary",
+								width  = 3,
+								height = "390px"
+							),
+							shinydashboard::box(
+								title  = "Evaluation metrics",
+								status = "primary",
+								width  = 12,
+								height = "300px",
+								shiny::includeHTML(
+									"html/performance_auc.html"
+								)
 							)
 						)
 					)

@@ -144,78 +144,41 @@ shiny::shinyServer(
 			}
 		)
 		
-		output$calibrationPlot <- plotly::renderPlotly( {
-			plotly::plot_ly(data = calibrationData) %>%
-				plotly::add_trace(
-					x     = c(0, .5), 
-					y     = c(0, .5),
-					mode  = 'lines',
-					line  = list(dash = "dash"),
-					color = I('black'),
-					type  = 'scatter'
-				) %>%
-				plotly::add_trace(
-					data    = calibrationData,
-					x       = ~predicted,
-					y       = ~observed,
-					type    = "scatter",
-					marker  = list(color = "blue"),
-					error_y = list(
-						type       = "data",
-						array      = calibrationData$upper - calibrationData$observed,
-						arrayminus = calibrationData$observed - calibrationData$lower,
-						color      = "blue"
-					)
-				) %>%
-				plotly::layout(
-					shapes = list(
-						addRectangle(
-							x0        = 0,
-							x1        = fifth1 / 100,
-							y0        = 0,
-							y1        = .5,
-							fillcolor = colorMap$color[1]
-						),
-						addRectangle(
-							x0        = fifth1 / 100,
-							x1        = fifth2 / 100,
-							y0        = 0,
-							y1        = .5,
-							fillcolor = colorMap$color[2]
-						),
-						addRectangle(
-							x0        = fifth2 / 100,
-							x1        = fifth3 / 100,
-							y0        = 0,
-							y1        = .5,
-							fillcolor = colorMap$color[3]
-						),
-						addRectangle(
-							x0        = fifth3 / 100,
-							x1        = fifth4 / 100,
-							y0        = 0,
-							y1        = .5,
-							fillcolor = colorMap$color[4]
-						),
-						addRectangle(
-							x0        = fifth4 / 100,
-							x1        = .5,
-							y0        = 0,
-							y1        = .5,
-							fillcolor = colorMap$color[5]
-						)
-					),
-					title = "External validation",
-					xaxis = list(
-						title = "Predicted 21-day mortality",
-						range = c(-.01, .5)
-					),
-					yaxis = list(
-						title = "Observed 21-day mortality",
-						range = c(-.01, .5)
-					),
-					showlegend = FALSE
+		output$calibrationMortalityCenter1 <- plotly::renderPlotly(
+			{
+				plotCalibration(
+					calibrationData = calibration$mortality[[1]],
+					fifths = fifths$mortality,
+					colorMap = colorMap
 				)
-		} )
+			}
+		)
+		output$calibrationMortalityCenter2 <- plotly::renderPlotly(
+			{
+				plotCalibration(
+					calibrationData = calibration$mortality[[2]],
+					fifths = fifths$mortality,
+					colorMap = colorMap
+				)
+			}
+		)
+		output$calibrationMortalityCenter3 <- plotly::renderPlotly(
+			{
+				plotCalibration(
+					calibrationData = calibration$mortality[[3]],
+					fifths = fifths$mortality,
+					colorMap = colorMap
+				)
+			}
+		)
+		output$calibrationMortalityCenter4 <- plotly::renderPlotly(
+			{
+				plotCalibration(
+					calibrationData = calibration$mortality[[4]],
+					fifths = fifths$mortality,
+					colorMap = colorMap
+				)
+			}
+		)
 	}
 )

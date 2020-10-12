@@ -145,20 +145,20 @@ addRectangle <- function(
 	)
 }
 
-# ----- Adds an info button in the ui -----
-addInfo <- function(item, infoId) {
-	infoTag <- tags$small(
-		class = "badge pull-right action-button",
-		style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
-		type  = "button",
-		id    = infoId,
-		"i"
-	)
-	
-	item$children[[1]]$children <- append(item$children[[1]]$children, list(infoTag))
-	
-	return(item)
-}
+# # ----- Adds an info button in the ui -----
+# addInfo <- function(item, infoId) {
+# 	infoTag <- tags$small(
+# 		class = "badge pull-right action-button",
+# 		style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
+# 		type  = "button",
+# 		id    = infoId,
+# 		"i"
+# 	)
+# 	
+# 	item$children[[1]]$children <- append(item$children[[1]]$children, list(infoTag))
+# 	
+# 	return(item)
+# }
 
 
 
@@ -276,3 +276,83 @@ plotRiskPrediction <- function(
 }
 
 
+
+plotCalibration <- function(
+	calibrationData,
+	fifths,
+	colorMap,
+	title = NULL
+) {
+	
+	plotly::plot_ly(data = calibrationData) %>%
+		plotly::add_trace(
+			x     = c(0, .5), 
+			y     = c(0, .5),
+			mode  = 'lines',
+			line  = list(dash = "dash"),
+			color = I('black'),
+			type  = 'scatter'
+		) %>%
+		plotly::add_trace(
+			data    = calibrationData,
+			x       = ~predicted,
+			y       = ~observed,
+			type    = "scatter",
+			marker  = list(color = "blue"),
+			error_y = list(
+				type       = "data",
+				array      = calibrationData$upper - calibrationData$observed,
+				arrayminus = calibrationData$observed - calibrationData$lower,
+				color      = "blue"
+			)
+		) %>%
+		plotly::layout(
+			shapes = list(
+				addRectangle(
+					x0        = 0,
+					x1        = fifths[1] / 100,
+					y0        = 0,
+					y1        = .5,
+					fillcolor = colorMap$color[1]
+				),
+				addRectangle(
+					x0        = fifths[1] / 100,
+					x1        = fifths[2] / 100,
+					y0        = 0,
+					y1        = .5,
+					fillcolor = colorMap$color[2]
+				),
+				addRectangle(
+					x0        = fifths[2] / 100,
+					x1        = fifths[3] / 100,
+					y0        = 0,
+					y1        = .5,
+					fillcolor = colorMap$color[3]
+				),
+				addRectangle(
+					x0        = fifths[3] / 100,
+					x1        = fifths[4] / 100,
+					y0        = 0,
+					y1        = .5,
+					fillcolor = colorMap$color[4]
+				),
+				addRectangle(
+					x0        = fifths[4] / 100,
+					x1        = .5,
+					y0        = 0,
+					y1        = .5,
+					fillcolor = colorMap$color[5]
+				)
+			),
+			title = title,
+			xaxis = list(
+				title = "Predicted 21-day mortality",
+				range = c(-.01, .5)
+			),
+			yaxis = list(
+				title = "Observed 21-day mortality",
+				range = c(-.01, .5)
+			),
+			showlegend = FALSE
+		)
+}

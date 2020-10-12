@@ -33,7 +33,11 @@ fifths <- list(
 	)
 )
 
-calibrationData <- readRDS("Data/calibrationData.rds")
+calibration <- list(
+	mortality = readRDS(
+		"Data/calibrationDataMortality.rds"
+	)
+)
 
 
 # ----- Color grid behind plotly output -----
