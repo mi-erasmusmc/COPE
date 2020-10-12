@@ -93,8 +93,8 @@ calculateRisk <- function(
 	
 	return(
 		list(
-			mortality = round(100 * mortalityRisk, 2),
-			icu       = round(100 * icuRisk, 2)
+			mortality = round(100 * mortalityRisk, 1),
+			icu       = round(100 * icuRisk, 1)
 		)
 	)
 	
@@ -168,7 +168,6 @@ plotRiskPrediction <- function(
 	fifths,
 	riskFifth,
 	colorMap,
-	title,
 	rangeMax
 ) {
 	
@@ -201,6 +200,7 @@ plotRiskPrediction <- function(
 			showarrow   = FALSE,
 			standoff    = 4,
 			hoverinfo   = "none",
+			hoverformat = "%{1}f",
 			showlegend  = FALSE,
 			font        = list(
 				size = 18,
@@ -262,14 +262,14 @@ plotRiskPrediction <- function(
 				)
 			),
 			yaxis = list(
-				title = "",
+				title = "Probability (%)",
 				range = c(
 					0,
 					rangeMax
 				)
 			),
 			xaxis = list(
-				title = title,
+				title = "",
 				showticklabels = FALSE
 			)
 		)
@@ -281,7 +281,10 @@ plotCalibration <- function(
 	calibrationData,
 	fifths,
 	colorMap,
-	title = NULL
+	title = NULL,
+	a,               # calibration intercept
+	b,               # calibration slope
+	c                # c-index
 ) {
 	
 	plotly::plot_ly(data = calibrationData) %>%
@@ -344,22 +347,39 @@ plotCalibration <- function(
 					fillcolor = colorMap$color[5]
 				)
 			),
-			# annotations = list(
-			# 	text = "a=0.10\nb=0.90\nc=.83",
-			# 	x = .45,
-			# 	y = .1,
-			# 	bgcolor     = "white",
-			# 	bordercolor = "black",
-			# 	borderwidth = 1,
-			# 	showarrow   = FALSE,
-			# 	standoff    = 4,
-			# 	hoverinfo   = "none",
-			# 	showlegend  = FALSE,
-			# 	font        = list(
-			# 		size = 12,
-			# 		color = "black"
-			# 	)
-			# ),
+			annotations = list(
+				text = paste(
+					paste(
+						"a",
+						a,
+						sep = "="
+					),
+					paste(
+						"b",
+						b,
+						sep = "="
+					),
+					paste(
+						"c",
+						c,
+						sep = "="
+					),
+					sep = "\n"
+				),
+				x = .45,
+				y = .08,
+				bgcolor     = "white",
+				opacity     = .6,
+				borderwidth = 1,
+				showarrow   = FALSE,
+				standoff    = 4,
+				hoverinfo   = "none",
+				showlegend  = FALSE,
+				font        = list(
+					size = 13,
+					color = "black"
+				)
+			),
 			title = title,
 			xaxis = list(
 				title = "Predicted 21-day mortality",

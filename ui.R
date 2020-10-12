@@ -64,7 +64,11 @@ shiny::shinyUI(
 						shinyBS::popify(
 							shiny::numericInput(
 								inputId = "age",
-								label   = "Age",
+								label   = shiny::div(
+									shiny::HTML(
+										"Age <em>(years)</em>"
+									)
+								),
 								value   = 66,
 								min     = 20,
 								max     = 100
@@ -81,13 +85,17 @@ shiny::shinyUI(
 						shinyBS::popify(
 							shiny::numericInput(
 								inputId = "respiratoryRate",
-								label   = "Respiratory rate",
+								label   = shiny::div(
+									shiny::HTML(
+										"<b>Respiratory rate</b> <em>(per min)</em>"
+									)
+								),
 								value   = 25,
 								min     = 0
 							),
-							title   = "<b>Respiratory age</b>",
+							title   = "<b>Respiratory rate</b>",
 							content = shiny::includeHTML(
-								path = "html/calculation_respiratoryAge.html"
+								path = "html/calculation_respiratoryRate.html"
 							),
 							placement = "bottom",
 							options   = list(
@@ -97,7 +105,11 @@ shiny::shinyUI(
 						shinyBS::popify(
 							shiny::numericInput(
 								inputId = "ldh",
-								label   = "LDH",
+								label   = shiny::div(
+									shiny::HTML(
+										"LDH <em>(10<sup>9</sup> per L)</em>"
+									)
+								),
 								value   = 293,
 								min     = 0
 							),
@@ -113,7 +125,11 @@ shiny::shinyUI(
 						shinyBS::popify(
 							shiny::numericInput(
 								inputId = "crp",
-								label   = "CRP",
+								label   = shiny::div(
+									shiny::HTML(
+										"CRP <em>(mg per L)</em>"
+									)
+								),
 								value   = 85
 							),
 							title   = "<b>CRP</b>",
@@ -135,7 +151,7 @@ shiny::shinyUI(
 						condition = "input.calculatePredictionButton",
 						shinydashboard::box(
 							status = "primary",
-							title  = "Mortality risk prediction",
+							title  = "Death within 21 days",
 							width  = 5,
 							height = "450px",
 							shinycssloaders::withSpinner(
@@ -148,7 +164,7 @@ shiny::shinyUI(
 						),
 						shinydashboard::box(
 							status = "primary",
-							title  = "ICU risk prediction",
+							title  = "ICU admission within 21 days",
 							width  = 5,
 							height = "450px",
 							shinycssloaders::withSpinner(
@@ -161,11 +177,17 @@ shiny::shinyUI(
 						),
 						shinydashboard::box(
 							status = "primary",
-							title  = "Result explanation",
+							title  = "Result Explanation",
 							width  = 12,
 							height = "240px",
-							textOutput(
+							shiny::htmlOutput(
 								outputId = "resultExplanationBox"
+							),
+							tags$head(
+								tags$style("#resultExplanationBox{
+                                 font-size: 16px;
+                                 }"
+								)
 							)
 						)
 					)
@@ -185,7 +207,7 @@ shiny::shinyUI(
 						shiny::tabPanel(
 							title = "Mortaltiy",
 							shinydashboard::box(
-								title  = "Calibration plot for: Center 1",
+								title  = "Calibration plot for: Hospital 1",
 								status = "primary",
 								width  = 3,
 								height = "350px",
@@ -198,7 +220,7 @@ shiny::shinyUI(
 								)
 							),
 							shinydashboard::box(
-								title  = "Center 2",
+								title  = "Hospital 2",
 								status = "primary",
 								width  = 3,
 								height = "350px",
@@ -211,7 +233,7 @@ shiny::shinyUI(
 								)
 							),
 							shinydashboard::box(
-								title  = "Center 3",
+								title  = "Hospital 3",
 								status = "primary",
 								width  = 3,
 								height = "350px",
@@ -224,7 +246,7 @@ shiny::shinyUI(
 								)
 							),
 							shinydashboard::box(
-								title  = "Center 4",
+								title  = "Hospital 4",
 								status = "primary",
 								width  = 3,
 								height = "350px",
@@ -240,7 +262,10 @@ shiny::shinyUI(
 								title  = "Evaluation metrics",
 								status = "primary",
 								width  = 12,
-								height = "280px"
+								height = "280px",
+								shiny::includeHTML(
+									"html/performance_text.html"
+								)
 							)
 						),
 						shiny::tabPanel(
@@ -249,34 +274,34 @@ shiny::shinyUI(
 								title  = "Calibration plot",
 								status = "primary",
 								width  = 3,
-								height = "390px"
+								height = "350px"
 							),
 							shinydashboard::box(
 								title  = "Calibration plot",
 								status = "primary",
 								width  = 3,
-								height = "390px"
+								height = "350px"
 							),
 							shinydashboard::box(
 								title  = "Calibration plot",
 								status = "primary",
 								width  = 3,
-								height = "390px"
+								height = "350px"
 							),
 							shinydashboard::box(
 								title  = "Calibration plot",
 								status = "primary",
 								width  = 3,
-								height = "390px"
+								height = "350px"
 							),
 							shinydashboard::box(
 								title  = "Evaluation metrics",
 								status = "primary",
 								width  = 12,
-								height = "300px"
-								# shiny::includeHTML(
-								# 	"html/performance_text.html"
-								# )
+								height = "280px",
+								shiny::includeHTML(
+									"html/performance_text.html"
+								)
 							)
 						)
 					)

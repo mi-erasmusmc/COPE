@@ -3,14 +3,17 @@ library(shinyBS)
 
 source("functions.R")
 
+# betaCoefficients <- list(
+# 	mortality = readRDS(
+# 		"Data/coefficientsMortality.rds"
+# 	),
+# 	icu = readRDS(
+# 		"Data/coefficientsICU.rds"
+# 	)
+# )
 
-betaCoefficients <- list(
-	mortality = readRDS(
-		"Data/coefficientsMortality.rds"
-	),
-	icu = readRDS(
-		"Data/coefficientsICU.rds"
-	)
+betaCoefficients <- readRDS(
+	"Data/betaCoefficients.rds"
 )
 
 baselineHazard <- list(
@@ -33,10 +36,26 @@ fifths <- list(
 	)
 )
 
-calibration <- list(
-	mortality = readRDS(
-		"Data/calibrationDataMortality.rds"
-	)
+# calibration <- list(
+# 	mortality = readRDS(
+# 		"Data/calibrationDataMortality.rds"
+# 	)
+# )
+
+calibration <- readRDS(
+	"Data/calibration.rds"
+)
+
+auc <- readRDS(
+	"Data/auc.rds"
+)
+
+calibrationIntercept <- readRDS(
+	"Data/calibrationIntercept.rds"
+)
+
+calibrationSlope <- readRDS(
+	"Data/calibrationSlope.rds"
 )
 
 

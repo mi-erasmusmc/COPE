@@ -66,7 +66,7 @@ shiny::shinyServer(
 				
 				rangeMax <- ifelse(
 					test = prediction$icu > 25 || prediction$mortality > 25,
-					yes  = 100,
+					yes  = 50,
 					no   = 30
 				)
 				
@@ -80,7 +80,6 @@ shiny::shinyServer(
 					fifths         = fifths$mortality,
 					riskFifth      = riskFifthMortality(),
 					colorMap       = colorMap,
-					title          = "Mortality",
 					rangeMax       = rangeMax
 				)
 				
@@ -93,7 +92,7 @@ shiny::shinyServer(
 				
 				rangeMax <- ifelse(
 					test = prediction$icu > 25 || prediction$mortality > 25,
-					yes  = 100,
+					yes  = 50,
 					no   = 30
 				)
 				
@@ -107,7 +106,6 @@ shiny::shinyServer(
 					fifths         = fifths$icu,
 					riskFifth      = riskFifthIcu(),
 					colorMap       = colorMap,
-					title          = "ICU",
 					rangeMax       = rangeMax
 				)
 				
@@ -116,7 +114,28 @@ shiny::shinyServer(
 		
 		output$resultExplanationBox <- shiny::renderText(
 			{
-				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dolor sed viverra ipsum nunc aliquet bibendum enim. Aenean vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi. Ut tristique et egestas quis ipsum. Vel pretium lectus quam id leo in. Nullam ac tortor vitae purus faucibus. Nisl vel pretium lectus quam id. Ultrices mi tempus imperdiet nulla malesuada. Sed risus ultricies tristique nulla aliquet enim tortor. Quam lacus suspendisse faucibus interdum. Est ante in nibh mauris cursus. Non sodales neque sodales ut etiam sit amet nisl purus."
+				prediction <- currentPrediction()
+				riskLevelLabels <- c(
+					"very low",
+					"low",
+					"intermediate",
+					"high",
+					"very high"
+				)
+				
+				paste(
+					shiny::includeHTML("html/calculation_result_explanation1.html"),
+					shiny::HTML(paste0(prediction$mortality, "%.")),
+					shiny::includeHTML("html/calculation_result_explanation2.html"),
+					shiny::HTML(riskLevelLabels[riskFifthMortality() - 1]),
+					shiny::includeHTML("html/calculation_result_explanation3.html"),
+					shiny::HTML("<br/><br/>"),
+					shiny::includeHTML("html/calculation_result_explanation4.html"),
+					shiny::HTML(paste0(prediction$icu, "%.")),
+					shiny::includeHTML("html/calculation_result_explanation2.html"),
+					shiny::HTML(riskLevelLabels[riskFifthIcu() - 1]),
+					shiny::includeHTML("html/calculation_result_explanation6.html")
+				)
 			}
 		)
 		
@@ -148,8 +167,11 @@ shiny::shinyServer(
 			{
 				plotCalibration(
 					calibrationData = calibration$mortality[[1]],
-					fifths = fifths$mortality,
-					colorMap = colorMap
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					a               = calibrationIntercept$mortality[1],
+					b               = calibrationSlope$mortality[1],
+					c               = auc$mortality[1]
 				)
 			}
 		)
@@ -157,8 +179,11 @@ shiny::shinyServer(
 			{
 				plotCalibration(
 					calibrationData = calibration$mortality[[2]],
-					fifths = fifths$mortality,
-					colorMap = colorMap
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					a               = calibrationIntercept$mortality[2],
+					b               = calibrationSlope$mortality[2],
+					c               = auc$mortality[2]
 				)
 			}
 		)
@@ -166,8 +191,11 @@ shiny::shinyServer(
 			{
 				plotCalibration(
 					calibrationData = calibration$mortality[[3]],
-					fifths = fifths$mortality,
-					colorMap = colorMap
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					a               = calibrationIntercept$mortality[3],
+					b               = calibrationSlope$mortality[3],
+					c               = auc$mortality[3]
 				)
 			}
 		)
@@ -175,8 +203,11 @@ shiny::shinyServer(
 			{
 				plotCalibration(
 					calibrationData = calibration$mortality[[4]],
-					fifths = fifths$mortality,
-					colorMap = colorMap
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					a               = calibrationIntercept$mortality[4],
+					b               = calibrationSlope$mortality[4],
+					c               = auc$mortality[4]
 				)
 			}
 		)
