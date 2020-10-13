@@ -144,7 +144,7 @@ shiny::shinyServer(
 				table <- DT::datatable(
 					data     = table1Long,
 					colnames = c(
-						"Status",
+						"Status at 21 days",
 						"Variable",
 						"Mean",
 						"SD",
@@ -154,8 +154,21 @@ shiny::shinyServer(
 						"Missing",
 						"%"
 					),
+					caption = htmltools::tags$caption(
+						style = 'font-size:16px;',
+						"Table 1: Key patient characteristics at the moment
+					of prediction. For all patients (N=4612), the results are displayed
+					first. By hitting \"Next\", you can view the characteristics of 
+					3 sub-populations of interest: ",
+						htmltools::em("Dead"),
+						"at 21 days (N=495)",
+						htmltools::em("Discharged"),
+						"(N=3632) at 21 days and ",
+						htmltools::em("In hospital"),
+						"(N=485) at 21 days."
+					),
 					options = list(
-						pageLength = 6
+						pageLength = 13
 					)
 				)
 				

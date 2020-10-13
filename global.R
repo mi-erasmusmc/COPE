@@ -73,7 +73,7 @@ colorMap <- data.frame(
 
 
 table1Long <- readRDS(
-  "Data/table1Long.rds"
+  "Data/table1.rds"
 ) %>%
 	dplyr::mutate(
 		status = factor(
@@ -84,9 +84,18 @@ table1Long <- readRDS(
 				"discharged",
 				"hospital"
 			)
+		),
+		variable = factor(
+			.$variable,
+			levels = c(
+				"Age", "BMI", "CRP", "D.dimer", 
+				"HR", "LDH", "Leucocytes", "Lymphocytes",
+				"male", "NIBP", "RR", "Saturation", "Temperature"
+			)
 		)
 	) %>%
 	dplyr::arrange(
-		.$status
+		.$status,
+		.$variable
 	)
 
