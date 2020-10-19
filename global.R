@@ -18,29 +18,23 @@ betaCoefficients <- readRDS(
 
 baselineHazard <- list(
 	mortality = 0.0632205,
-	icu       = 0.05825707
+	icu       = 0.06078579
 )
 
 fifths <- list(
 	mortality = c(
-		.02137932 * 100,
-		.04912515 * 100,
-		.09175009 * 100,
-		.17801975 * 100
+		.020562059 * 100,
+		.047966477 * 100,
+		.090997030 * 100,
+		.182960687 * 100
 	),
 	icu = c(
-		.02602234 * 100,
-		.04661271 * 100,
-		.07384097 * 100,
-		.12741744 * 100
+		.06322953 * 100,
+		.11972550 * 100,
+		.19091041 * 100,
+		.31256813 * 100
 	)
 )
-
-# calibration <- list(
-# 	mortality = readRDS(
-# 		"Data/calibrationDataMortality.rds"
-# 	)
-# )
 
 calibration <- readRDS(
 	"Data/calibration.rds"
@@ -99,3 +93,16 @@ table1Long <- readRDS(
 		.$variable
 	)
 
+
+transformationsMortality <- list(
+	time            = identity,
+	age             = identity,
+	respiratoryRate = log,
+	crp             = log,
+	ldh             = log
+)
+
+transformationsIcu <- list(
+	lp  = identity,
+	age = identity
+)

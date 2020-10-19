@@ -1,103 +1,35 @@
+createLinearPredictor <- function(
+	modelMatrix,
+	beta
+) {
+	beta <- matrix(
+		beta,
+		ncol = 1
+	)
+	
+	linearPredictor <- modelMatrix %*% beta
+	return(linearPredictor)
+}
+
+
 survivalProbability <- function(
-	hazard,
-	covariates,
-	beta,
+	baselineHazard,
+	linearPredictor,
 	center
 ) {
 	
-	res <- 1 - exp(-hazard * exp(covariates %*% beta - center))
-	return(res)
+	res <- 1 - exp(-baselineHazard * exp(linearPredictor - center))
+	return(round(100 * res, 1))
 	
 }
-
 
 
 createModelMatrix <- function(
-	time = 4,
-	age,
-	rr,                # respiratory rate
-	crp,               # C-reactive protein
-	ldh,               # Lactatedehydrogenase
-	outcome            # Now only mortality and icu are available
+	covariates,
+	transformations
 ) {
-	
-	if (outcome == "mortality") {
-		res <- matrix(
-			c(
-				time,
-				age,
-				log(rr),
-				log(crp),
-				log(ldh)
-			),
-			nrow = 1
-		) 
-	} else {
-		res <- matrix(
-			c(
-				time,
-				age,
-				age^2,
-				log(rr),
-				log(crp),
-				log(ldh)
-			),
-			nrow = 1
-		)
-	}
-	
+	res <- diag(sapply(transformations, mapply, covariates))
 	return(res)
-}
-
-
-
-calculateRisk <- function(
-	time = 4,
-	age,
-	rr,
-	crp,
-	ldh,
-	betaCoefficients,
-	baselineHazard
-) {
-	
-	covariateVector <- createModelMatrix(
-		age = age,
-		rr  = rr,
-		crp = crp,
-		ldh = ldh,
-		outcome = "mortality"
-	)
-	
-	mortalityRisk <- survivalProbability(
-		hazard     = baselineHazard$mortality,
-		covariates = covariateVector,
-		beta       = betaCoefficients$mortality,
-		center     = 13.13958
-	)
-	
-	covariateVector <- createModelMatrix(
-		age = age,
-		rr  = rr,
-		crp = crp,
-		ldh = ldh,
-		outcome = "icu"
-	)
-	
-	icuRisk <- survivalProbability(
-		hazard     = baselineHazard$icu,
-		covariates = covariateVector,
-		beta       = betaCoefficients$icu,
-		center     = 10.725
-	)
-	
-	return(
-		list(
-			mortality = round(100 * mortalityRisk, 1),
-			icu       = round(100 * icuRisk, 1)
-		)
-	)
-	
 }
 
 

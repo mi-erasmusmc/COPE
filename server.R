@@ -4,16 +4,55 @@ shiny::shinyServer(
 		output,
 		session
 	) {
+		
+		currentInputData <- shiny::reactive(
+			{
+				data.frame(
+					time            = 4,
+					age             = input$age,
+					respiratoryRate = input$respiratoryRate,
+					crp             = input$crp,
+					ldh             = input$ldh
+				)
+			}
+		)
+		
+		mortalityLinearPredictor <- shiny::eventReactive(
+			input$calculatePredictionButton,
+			{
+				modelMatrix <- createModelMatrix(
+					covariates      = currentInputData(),
+					transformations = transformationsMortality
+				)
+				
+				createLinearPredictor(
+					modelMatrix = modelMatrix,
+					beta        = betaCoefficients$mortality
+				)
+			}
+		)
+		
 		currentPrediction <- shiny::eventReactive(
 			input$calculatePredictionButton,
 			{
-				prediction <- calculateRisk(
-					age              = input$age,
-					rr               = input$respiratoryRate,
-					crp              = input$crp,
-					ldh              = input$ldh,
-					baselineHazard   = baselineHazard,
-					betaCoefficients = betaCoefficients
+				
+				mortalityRisk <- survivalProbability(
+					baselineHazard  = baselineHazard$mortality,
+					linearPredictor = mortalityLinearPredictor(),
+					center          = 13.13958
+				)
+				
+				icuLinearPredictor <- betaCoefficients$icu * (mortalityLinearPredictor() - 13.13958)
+				
+				icuRisk <- survivalProbability(
+					baselineHazard  = baselineHazard$icu,
+					linearPredictor = icuLinearPredictor,
+					center          = -.8952993 
+				)
+				
+				prediction <- list(
+					mortality = mortalityRisk,
+					icu       = icuRisk
 				)
 				
 				return(prediction)
@@ -65,9 +104,9 @@ shiny::shinyServer(
 				prediction <- currentPrediction()
 				
 				rangeMax <- ifelse(
-					test = prediction$icu > 25 || prediction$mortality > 25,
-					yes  = 50,
-					no   = 30
+					test = prediction$icu > 30 || prediction$mortality > 30, 
+					yes  = 60,
+					no   = 35
 				)
 				
 				predictionData <- data.frame(
@@ -91,9 +130,9 @@ shiny::shinyServer(
 				prediction <- currentPrediction()
 				
 				rangeMax <- ifelse(
-					test = prediction$icu > 25 || prediction$mortality > 25,
-					yes  = 50,
-					no   = 30
+					test = prediction$icu > 30 || prediction$mortality > 30,
+					yes  = 60,
+					no   = 35
 				)
 				
 				predictionData <- data.frame(
@@ -161,7 +200,7 @@ shiny::shinyServer(
 					first. By hitting \"Next\", you can view the characteristics of 
 					3 sub-populations of interest: ",
 						htmltools::em("Dead"),
-						"at 21 days (N=495)",
+						"at 21 days (N=495),",
 						htmltools::em("Discharged"),
 						"(N=3632) at 21 days and ",
 						htmltools::em("In hospital"),
