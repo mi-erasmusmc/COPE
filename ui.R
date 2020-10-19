@@ -199,7 +199,66 @@ shiny::shinyUI(
 					)
 				),
 				shinydashboard::tabItem(
-					tabName = "model"
+					tabName = "model",
+					shinydashboard::box(
+						title = "Mortality",
+						status = "primary",
+						height = "500px",
+						shiny::withMathJax(
+							shiny::helpText(
+								shiny::p(
+								"The probability of mortality within 21 days
+								was estimated using a Cox proportional hazards model.
+								The natural logarithm of the hazard ratio is given by:
+								$$
+								\\log(HR_m)=0.052\\times Age + 
+								1.529\\times\\log(RR) +
+								0.2829\\times\\log(CRP) +
+								1.041\\times\\log(LDH) - 
+								14.94
+								$$
+								Then the probability of death within 21 days is:
+								$$
+								\\Pr(Death) = 1 - \\exp\\bigg(-0.06322\\times\\exp\\Big(\\log(HR_m)\\Big)\\bigg),
+								$$
+								where log is the natural logarithm, exp is the 
+								natural exponent, RR (r/min) is the respiratory rate, CRP is
+								the C-reactive protein level (mg/L) and LDH is the 
+								Lactatedehydrogenase level (U/L). The age of the
+								patients is measured in years."
+								)
+							)
+						),
+						tags$head(
+							tags$style(".help-block p {font-size: 16px;}")
+						)
+					),
+					shinydashboard::box(
+						title = "ICU admission",
+						status = "primary",
+						height = "500px",
+						shiny::withMathJax(
+							shiny::helpText(
+								shiny::p(
+									"The probability of admission to the ICU within
+									21 days was estimated using a re-calibrated version
+									of the model for 21-day mortality. More specifically,
+									the natural logarithm of the hazard ratio for
+									ICU admission is given from:
+									$$
+									\\log(HR_{ICU}) = 0.7684\\times\\log(HR_m) +
+									0.8952
+									$$
+									Then, the probability for 21-day ICU admission 
+									can be estimted from:
+									$$
+									\\Pr(ICU) = 1 - \\exp\\bigg(-0.06079 \\times\\exp\\Big(\\log(HR_{ICU})\\Big)\\bigg)
+									$$
+									"
+								)
+							)
+						),
+					)
 				),
 				shinydashboard::tabItem(
 					tabName = "performance",

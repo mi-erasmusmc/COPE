@@ -83,7 +83,7 @@ shiny::shinyServer(
 				fifthsIcu <- fifths$icu
 				prediction <- currentPrediction()
 				
-
+				
 				
 				riskFifths <- c(
 					0,
