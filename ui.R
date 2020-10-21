@@ -203,7 +203,8 @@ shiny::shinyUI(
 					shinydashboard::box(
 						title = "Mortality",
 						status = "primary",
-						height = "500px",
+						width = 12,
+						height = "300px",
 						shiny::withMathJax(
 							shiny::helpText(
 								shiny::p(
@@ -236,7 +237,8 @@ shiny::shinyUI(
 					shinydashboard::box(
 						title = "ICU admission",
 						status = "primary",
-						height = "500px",
+						width = 12,
+						height = "300px",
 						shiny::withMathJax(
 							shiny::helpText(
 								shiny::p(
