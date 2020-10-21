@@ -18,6 +18,7 @@ shiny::shinyUI(
 			)
 		),
 		shinydashboard::dashboardSidebar(
+			shinyalert::useShinyalert(),
 			shinydashboard::sidebarMenu(
 				id = "menu1",
 				shinydashboard::menuItem(
@@ -60,7 +61,7 @@ shiny::shinyUI(
 					shinydashboard::box(
 						status = "primary",
 						width  = 2,
-						height = "450px",
+						height = "400px",
 						shinyBS::popify(
 							shiny::numericInput(
 								inputId = "age",
@@ -153,12 +154,12 @@ shiny::shinyUI(
 							status = "primary",
 							title  = "Death within 21 days",
 							width  = 5,
-							height = "450px",
+							height = "400px",
 							shinycssloaders::withSpinner(
 								type = 4,
 								plotly::plotlyOutput(
 									outputId = "calculationPlotMortality",
-									height = "380px"
+									height = "330px"
 								)
 							)
 						),
@@ -166,12 +167,12 @@ shiny::shinyUI(
 							status = "primary",
 							title  = "ICU admission within 21 days",
 							width  = 5,
-							height = "450px",
+							height = "400px",
 							shinycssloaders::withSpinner(
 								type = 4,
 								plotly::plotlyOutput(
 									outputId = "calculationPlotIcu",
-									height = "380px"
+									height = "330px"
 								)
 							)
 						),

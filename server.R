@@ -4,6 +4,15 @@ shiny::shinyServer(
 		output,
 		session
 	) {
+		observe({
+			shinyalert::shinyalert(
+				"Disclaimer", 
+				shiny::includeHTML("html/disclaimer.html"),
+				type = "info",
+				html = TRUE,
+				size = "m",
+			)	
+		}) 
 		
 		currentInputData <- shiny::reactive(
 			{
