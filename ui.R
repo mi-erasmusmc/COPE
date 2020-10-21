@@ -52,7 +52,7 @@ shiny::shinyUI(
 				shinydashboard::tabItem(
 					tabName = "description",
 					shiny::includeHTML(
-						"html/description_text.html"
+						"html/description_abstract.html"
 					)
 				),
 				shinydashboard::tabItem(
