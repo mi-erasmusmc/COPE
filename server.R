@@ -3,128 +3,197 @@ shiny::shinyServer(
 		input,
 		output,
 		session
-	)
-	{
-		currentPrediction <- shiny::eventReactive(
-			input$calculatePredictionButton,
+	) {
+		observe({
+			shinyalert::shinyalert(
+				"Disclaimer", 
+				shiny::includeHTML("html/disclaimer.html"),
+				type = "info",
+				html = TRUE,
+				size = "m",
+			)	
+		}) 
+		
+		currentInputData <- shiny::reactive(
 			{
-				prediction <- calculateRisk(
-					age = input$age,
-					rr = input$respiratoryAge,
-					saturation = input$oxygenSaturation,
-					crp = input$crp,
-					ldh = input$ldh,
-					leucocytes = input$leucocyteCount,
-					baselineHazard = baselineHazard,
-					betaCoefficients = betaCoefficients
-				)
-				
-				return(
-					round(
-						prediction,
-						4
-					)
+				data.frame(
+					time            = 4,
+					age             = input$age,
+					respiratoryRate = input$respiratoryRate,
+					crp             = input$crp,
+					ldh             = input$ldh
 				)
 			}
 		)
 		
-		# prediction <- shiny::eventReactive(
-		# 	input$calculatePredictionButton,
-		# 	{
-		# 		currentPrediction()
-		# 	}
-		# )
-		
-		output$calculationPlot <- plotly::renderPlotly(
+		mortalityLinearPredictor <- shiny::eventReactive(
+			input$calculatePredictionButton,
 			{
-				plotData <- data.frame(
-					x = "Mortality",
-					y = currentPrediction()
+				modelMatrix <- createModelMatrix(
+					covariates      = currentInputData(),
+					transformations = transformationsMortality
 				)
 				
-				plotData %>%
-					plotly::plot_ly(
-						x = ~x,
-						y = ~y,
-						type = "bar",
-						opacity = .8
-					) %>%
-					plotly::add_text(
-						text = ~paste(
-							y,
-							"%"
-						),
-						hoverinfo = "none",
-						textposition = "top",
-						showlegend = FALSE,
-						textfont = list(
-							size = 20,
-							color = "black"
-						)
-					) %>%
-					plotly::layout(
-						shapes = list(
-							hline(
-								fifth1,
-								color = "green"
-							),
-							hline(
-								fifth2,
-								color = "yellow"
-							),
-							hline(
-								fifth3,
-								color = "orange"
-							),
-							hline(
-								fifth4,
-								color = "red"
-							)
-						),
-						yaxis = list(
-							title = "",
-							range = c(
-								0,
-								30
-							)
-						),
-						xaxis = list(
-							title = ""
-						)
-					)
+				createLinearPredictor(
+					modelMatrix = modelMatrix,
+					beta        = betaCoefficients$mortality
+				)
+			}
+		)
+		
+		currentPrediction <- shiny::eventReactive(
+			input$calculatePredictionButton,
+			{
+				
+				mortalityRisk <- survivalProbability(
+					baselineHazard  = baselineHazard$mortality,
+					linearPredictor = mortalityLinearPredictor(),
+					center          = 13.13958
+				)
+				
+				icuLinearPredictor <- betaCoefficients$icu * (mortalityLinearPredictor() - 13.13958)
+				
+				icuRisk <- survivalProbability(
+					baselineHazard  = baselineHazard$icu,
+					linearPredictor = icuLinearPredictor,
+					center          = -.8952993 
+				)
+				
+				prediction <- list(
+					mortality = mortalityRisk,
+					icu       = icuRisk
+				)
+				
+				return(prediction)
+			}
+		)
+		
+		riskFifthMortality <- shiny::reactive(
+			{
+				fifthsMortality <- fifths$mortality
+				prediction <- currentPrediction()
+				
+				riskFifths <- c(
+					0,
+					fifthsMortality[1],
+					fifthsMortality[2],
+					fifthsMortality[3],
+					fifthsMortality[4],
+					100,
+					prediction$mortality
+				)
+				
+				return(rank(riskFifths)[7])
+			}
+		)
+		
+		riskFifthIcu <- shiny::reactive(
+			{
+				fifthsIcu <- fifths$icu
+				prediction <- currentPrediction()
+				
+				
+				
+				riskFifths <- c(
+					0,
+					fifthsIcu[1],
+					fifthsIcu[2],
+					fifthsIcu[3],
+					fifthsIcu[4],
+					100,
+					prediction$icu
+				)
+				
+				return(rank(riskFifths)[7])
+			}
+		)
+		
+		output$calculationPlotMortality <- plotly::renderPlotly(
+			{
+				prediction <- currentPrediction()
+				
+				rangeMax <- ifelse(
+					test = prediction$icu > 30 || prediction$mortality > 30, 
+					yes  = 60,
+					no   = 35
+				)
+				
+				predictionData <- data.frame(
+					x = 1,
+					y = prediction$mortality
+				)
+				
+				plotRiskPrediction(
+					predictionData = predictionData,
+					fifths         = fifths$mortality,
+					riskFifth      = riskFifthMortality(),
+					colorMap       = colorMap,
+					rangeMax       = rangeMax
+				)
+				
+			}
+		)
+		
+		output$calculationPlotIcu <- plotly::renderPlotly(
+			{
+				prediction <- currentPrediction()
+				
+				rangeMax <- ifelse(
+					test = prediction$icu > 30 || prediction$mortality > 30,
+					yes  = 60,
+					no   = 35
+				)
+				
+				predictionData <- data.frame(
+					x = 1,
+					y = prediction$icu
+				)
+				
+				plotRiskPrediction(
+					predictionData = predictionData,
+					fifths         = fifths$icu,
+					riskFifth      = riskFifthIcu(),
+					colorMap       = colorMap,
+					rangeMax       = rangeMax
+				)
+				
 			}
 		)
 		
 		output$resultExplanationBox <- shiny::renderText(
 			{
-				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dolor sed viverra ipsum nunc aliquet bibendum enim. Aenean vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi. Ut tristique et egestas quis ipsum. Vel pretium lectus quam id leo in. Nullam ac tortor vitae purus faucibus. Nisl vel pretium lectus quam id. Ultrices mi tempus imperdiet nulla malesuada. Sed risus ultricies tristique nulla aliquet enim tortor. Quam lacus suspendisse faucibus interdum. Est ante in nibh mauris cursus. Non sodales neque sodales ut etiam sit amet nisl purus."
-			}
-		)
-		
-		output$table1Overall <- DT::renderDataTable(
-			{
-				table <- DT::datatable(
-					data = table1$overall,
-					colnames = c(
-						"",
-						"Mean",
-						"SD",
-						"Median",
-						"Min",
-						"Max",
-						"Missing",
-						"%"
-					)
+				prediction <- currentPrediction()
+				riskLevelLabels <- c(
+					"very low",
+					"low",
+					"intermediate",
+					"high",
+					"very high"
+				)
+				
+				paste(
+					shiny::includeHTML("html/calculation_result_explanation1.html"),
+					shiny::HTML(paste0(prediction$mortality, "%.")),
+					shiny::includeHTML("html/calculation_result_explanation2.html"),
+					shiny::HTML(riskLevelLabels[riskFifthMortality() - 1]),
+					shiny::includeHTML("html/calculation_result_explanation3.html"),
+					shiny::HTML("<br/><br/>"),
+					shiny::includeHTML("html/calculation_result_explanation4.html"),
+					shiny::HTML(paste0(prediction$icu, "%.")),
+					shiny::includeHTML("html/calculation_result_explanation2.html"),
+					shiny::HTML(riskLevelLabels[riskFifthIcu() - 1]),
+					shiny::includeHTML("html/calculation_result_explanation6.html")
 				)
 			}
 		)
 		
-		output$table1Discharged <- DT::renderDataTable(
+		output$table1 <- DT::renderDataTable(
 			{
 				table <- DT::datatable(
-					data = table1$discharged,
+					data     = table1Long,
 					colnames = c(
-						"",
+						"Status at 21 days",
+						"Variable",
 						"Mean",
 						"SD",
 						"Median",
@@ -132,41 +201,74 @@ shiny::shinyServer(
 						"Max",
 						"Missing",
 						"%"
+					),
+					caption = htmltools::tags$caption(
+						style = 'font-size:16px;',
+						"Table 1: Key patient characteristics at the moment
+					of prediction. For all patients (N=4612), the results are displayed
+					first. By hitting \"Next\", you can view the characteristics of 
+					3 sub-populations of interest: ",
+						htmltools::em("Dead"),
+						"at 21 days (N=495),",
+						htmltools::em("Discharged"),
+						"(N=3632) at 21 days and ",
+						htmltools::em("In hospital"),
+						"(N=485) at 21 days."
+					),
+					options = list(
+						pageLength = 13
 					)
+				)
+				
+				return(table)
+			}
+		)
+		
+		output$calibrationMortalityCenter1 <- plotly::renderPlotly(
+			{
+				plotCalibration(
+					calibrationData = calibration$mortality[[1]],
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					a               = calibrationIntercept$mortality[1],
+					b               = calibrationSlope$mortality[1],
+					c               = auc$mortality[1]
 				)
 			}
 		)
-		output$table1InHospital <- DT::renderDataTable(
+		output$calibrationMortalityCenter2 <- plotly::renderPlotly(
 			{
-				table <- DT::datatable(
-					data = table1$hospital,
-					colnames = c(
-						"",
-						"Mean",
-						"SD",
-						"Median",
-						"Min",
-						"Max",
-						"Missing",
-						"%"
-					)
+				plotCalibration(
+					calibrationData = calibration$mortality[[2]],
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					a               = calibrationIntercept$mortality[2],
+					b               = calibrationSlope$mortality[2],
+					c               = auc$mortality[2]
 				)
 			}
 		)
-		output$table1Dead<- DT::renderDataTable(
+		output$calibrationMortalityCenter3 <- plotly::renderPlotly(
 			{
-				table <- DT::datatable(
-					data = table1$dead,
-					colnames = c(
-						"",
-						"Mean",
-						"SD",
-						"Median",
-						"Min",
-						"Max",
-						"Missing",
-						"%"
-					)
+				plotCalibration(
+					calibrationData = calibration$mortality[[3]],
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					a               = calibrationIntercept$mortality[3],
+					b               = calibrationSlope$mortality[3],
+					c               = auc$mortality[3]
+				)
+			}
+		)
+		output$calibrationMortalityCenter4 <- plotly::renderPlotly(
+			{
+				plotCalibration(
+					calibrationData = calibration$mortality[[4]],
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					a               = calibrationIntercept$mortality[4],
+					b               = calibrationSlope$mortality[4],
+					c               = auc$mortality[4]
 				)
 			}
 		)

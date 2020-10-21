@@ -1,74 +1,110 @@
-library(shinyBS)
-library(plotly)
 library(tidyverse)
-library(dashboardthemes)
+library(shinyBS)
+library(shinyalert)
+
+source("functions.R")
+
+# betaCoefficients <- list(
+# 	mortality = readRDS(
+# 		"Data/coefficientsMortality.rds"
+# 	),
+# 	icu = readRDS(
+# 		"Data/coefficientsICU.rds"
+# 	)
+# )
 
 betaCoefficients <- readRDS(
-	"Data/coefficients.rds"
+	"Data/betaCoefficients.rds"
 )
 
-baselineHazard <- 0.06336707
-
-fifth1 <- 0.021538467*100
-fifth2 <- 0.051167435*100
-fifth3 <- 0.096543873*100
-fifth4 <- 0.179968413*100
-
-table1 <- readRDS(
-	"Data/table1.rds"
+baselineHazard <- list(
+	mortality = 0.0632205,
+	icu       = 0.06078579
 )
 
-calculateRisk <- function(
-	age,
-	rr,
-	saturation,
-	crp,
-	ldh,
-	leucocytes,
-	betaCoefficients,
-	baselineHazard
-)
-{
-	covariateVector <- c(
-		age,
-		rr,
-		saturation,
-		log(crp),
-		log(ldh),
-		log(leucocytes)
+fifths <- list(
+	mortality = c(
+		.020562059 * 100,
+		.047966477 * 100,
+		.090997030 * 100,
+		.182960687 * 100
+	),
+	icu = c(
+		.06322953 * 100,
+		.11972550 * 100,
+		.19091041 * 100,
+		.31256813 * 100
 	)
-	
-	prediction <- 100*(1 - exp(-baselineHazard*exp(covariateVector%*%betaCoefficients)))
-	
-	return(c(round(prediction, 2)))
-}
+)
+
+calibration <- readRDS(
+	"Data/calibration.rds"
+)
+
+auc <- readRDS(
+	"Data/auc.rds"
+)
+
+calibrationIntercept <- readRDS(
+	"Data/calibrationIntercept.rds"
+)
+
+calibrationSlope <- readRDS(
+	"Data/calibrationSlope.rds"
+)
 
 
-hline <- function(y = 0, color = "black") {
-	list(
-		type = "line",
-		x0 = 0,
-		x1 = 1,
-		xref = "paper",
-		y0 = y,
-		y1 = y,
-		layer = "below",
-		line = list(
-			color = color
+# ----- Color grid behind plotly output -----
+colorMap <- data.frame(
+	fifth = 1:5,
+	color = c(
+		"#dffbdf",
+		"#44D492",
+		"#F5EB67",
+		"#FFA15C",
+		"#FA233E"
+	)
+)
+
+
+table1Long <- readRDS(
+  "Data/table1.rds"
+) %>%
+	dplyr::mutate(
+		status = factor(
+			.$status,
+			levels = c(
+				"overall",
+				"dead",
+				"discharged",
+				"hospital"
+			)
+		),
+		variable = factor(
+			.$variable,
+			levels = c(
+				"Age", "BMI", "CRP", "D.dimer", 
+				"HR", "LDH", "Leucocytes", "Lymphocytes",
+				"male", "NIBP", "RR", "Saturation", "Temperature"
+			)
 		)
+	) %>%
+	dplyr::arrange(
+		.$status,
+		.$variable
 	)
-}
 
-addInfo <- function(item, infoId) {
-	infoTag <- tags$small(
-		class = "badge pull-right action-button",
-		style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
-		type = "button",
-		id = infoId,
-		"i"
-	)
-	
-	item$children[[1]]$children <- append(item$children[[1]]$children, list(infoTag))
-	
-	return(item)
-}
+
+transformationsMortality <- list(
+	time            = identity,
+	age             = identity,
+	respiratoryRate = log,
+	crp             = log,
+	ldh             = log
+)
+
+transformationsIcu <- list(
+	lp  = identity,
+	age = identity
+)
+
