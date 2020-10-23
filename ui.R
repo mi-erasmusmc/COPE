@@ -248,7 +248,7 @@ shiny::shinyUI(
 							)
 						),
 						tags$head(
-							tags$style(".help-block p {font-size: 16px;}")
+							tags$style(".help-block p {font-size: 14px;}")
 						)
 					),
 					shinydashboard::box(

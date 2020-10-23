@@ -236,6 +236,7 @@ plotCalibration <- function(
 			)
 		) %>%
 		plotly::layout(
+			font = list(size = 11),
 			shapes = list(
 				addRectangle(
 					x0        = 0,
