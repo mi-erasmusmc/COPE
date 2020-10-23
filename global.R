@@ -1,17 +1,10 @@
-library(tidyverse)
+library(dplyr)
 library(shinyBS)
 library(shinyalert)
+library(data.table)
 
 source("functions.R")
 
-# betaCoefficients <- list(
-# 	mortality = readRDS(
-# 		"Data/coefficientsMortality.rds"
-# 	),
-# 	icu = readRDS(
-# 		"Data/coefficientsICU.rds"
-# 	)
-# )
 
 betaCoefficients <- readRDS(
 	"Data/betaCoefficients.rds"
@@ -74,18 +67,10 @@ table1Long <- readRDS(
 		status = factor(
 			.$status,
 			levels = c(
-				"overall",
-				"dead",
-				"discharged",
-				"hospital"
-			)
-		),
-		variable = factor(
-			.$variable,
-			levels = c(
-				"Age", "BMI", "CRP", "D.dimer", 
-				"HR", "LDH", "Leucocytes", "Lymphocytes",
-				"male", "NIBP", "RR", "Saturation", "Temperature"
+				"Overall",
+				"Dead",
+				"Discharged",
+				"In hospital"
 			)
 		)
 	) %>%

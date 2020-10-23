@@ -59,40 +59,31 @@ addRectangle <- function(
 	y0,
 	y1,
 	fillcolor,
-	opacity = .4
+	linewidth = 0,
+	opacity = .4,
+	layer = NULL
 ) {
-	list(
+	res <- list(
 		type      = "rect",
 		fillcolor = fillcolor,
-		layer     = "below",
+		# layer     = "below",
 		opacity   = opacity,
 		x0        = x0,
 		x1        = x1,
 		y0        = y0,
 		y1        = y1,
 		line      = list(
-			color = fillcolor,
-			width = 0
+			color = "black",
+			width = linewidth
 		)
 	)
+	
+	if (!is.null(layer)) {
+		res$layer <- layer
+	}
+	
+	return(res)
 }
-
-# # ----- Adds an info button in the ui -----
-# addInfo <- function(item, infoId) {
-# 	infoTag <- tags$small(
-# 		class = "badge pull-right action-button",
-# 		style = "padding: 1px 6px 2px 6px; background-color: steelblue;",
-# 		type  = "button",
-# 		id    = infoId,
-# 		"i"
-# 	)
-# 	
-# 	item$children[[1]]$children <- append(item$children[[1]]$children, list(infoTag))
-# 	
-# 	return(item)
-# }
-
-
 
 
 plotRiskPrediction <- function(
@@ -103,25 +94,67 @@ plotRiskPrediction <- function(
 	rangeMax
 ) {
 	
-	# rangeMax <- 30   # the range of y axis
-	# 
-	# if (predictionData$y > 25) {
-	# 	rangeMax <- 100
-	# }
-
-	predictionData	%>%
-		plotly::plot_ly(
-			x      = ~x,
-			y      = ~y,
-			type   = "bar",
-			marker = list(
-				line = list(
-					width = 2,
-					color = "black"
-				)
-			)
+	plotly::plot_ly() %>%
+		plotly::add_polygons(
+			mode = "markers",
+			x          = c(0, 0, 2, 2),
+			y          = c(0, fifths[1], fifths[1], 0),
+			fillcolor  = 'rgba(223, 251, 223, 0.2)',
+			text       = "Lowest risk",
+			hoveron    = "fills",
+			hoverinfo  = "text",
+			line       = list(width=0),
+			inherit    = FALSE,
+			showlegend = FALSE
+		) %>%
+		plotly::add_polygons(
+			x          = c(0, 0, 2, 2),
+			y          = c(fifths[1], fifths[2], fifths[2], fifths[1]),
+			fillcolor  = 'rgba(68,212,146, 0.4)',
+			text       = "Lower risk",
+			hoveron    = "fills",
+			hoverinfo  = "text",
+			line       = list(width=0),
+			inherit    = FALSE,
+			showlegend = FALSE
+		) %>%
+		plotly::add_polygons(
+			x          = c(0, 0, 2, 2),
+			y          = c(fifths[2], fifths[3], fifths[3], fifths[2]),
+			fillcolor  = 'rgba(245,235,103, 0.4)',
+			text       = "Intermediate risk",
+			hoveron    = "fills",
+			hoverinfo  = "text",
+			inherit    = FALSE,
+			line       = list(width=0),
+			showlegend = FALSE
+		) %>%
+		plotly::add_polygons(
+			x          = c(0, 0, 2, 2),
+			y          = c(fifths[3], fifths[4], fifths[4], fifths[3]),
+			fillcolor  = 'rgba(255,161,92, 0.4)',
+			text       = "Higher risk",
+			hoveron    = "fills",
+			hoverinfo  = "text",
+			inherit    = FALSE,
+			line       = list(width=0),
+			showlegend = FALSE
+		) %>%
+		plotly::add_polygons(
+			x          = c(0, 0, 2, 2),
+			y          = c(fifths[4], 100, 100, fifths[4]),
+			fillcolor  = 'rgba(250,35,62, 0.4)',
+			text       = "Highest risk",
+			hoveron    = "fills",
+			hoverinfo  = "text",
+			inherit    = FALSE,
+			line       = list(width=0),
+			showlegend = FALSE
 		) %>%
 		plotly::add_annotations(
+			data = predictionData,
+			x = ~x,
+			y = ~y,
 			text = ~paste(
 				y,
 				"%"
@@ -141,56 +174,14 @@ plotRiskPrediction <- function(
 		) %>%
 		plotly::layout(
 			shapes = list(
-				hline(
-					fifths[1],
-					color = "black"
-				),
-				hline(
-					fifths[2],
-					color = "black"
-				),
-				hline(
-					fifths[3],
-					color = "black"
-				),
-				hline(
-					fifths[4],
-					color = "black"
-				),
 				addRectangle(
-					x0        = 0,
-					x1        = 2,
-					y0        = 0,
-					y1        = fifths[1],
-					fillcolor = colorMap$color[1]
-				),
-				addRectangle(
-					x0        = 0,
-					x1        = 2,
-					y0        = fifths[1],
-					y1        = fifths[2],
-					fillcolor = colorMap$color[2]
-				),
-				addRectangle(
-					x0        = 0,
-					x1        = 2,
-					y0        = fifths[2],
-					y1        = fifths[3],
-					fillcolor = colorMap$color[3]
-				),
-				addRectangle(
-					x0        = 0,
-					x1        = 2,
-					y0        = fifths[3],
-					y1        = fifths[4],
-					fillcolor = colorMap$color[4]
-				),
-				addRectangle(
-					x0        = 0,
-					x1        = 2,
-					y0        = fifths[4],
-					y1        = 100,
-					fillcolor = colorMap$color[5]
+					x0 = .5,
+					x1 = 1.5,
+					y0 = 0,
+					y1 = ~y,
+					fillcolor = "#3B6AA0",
+					opacity = 1,
+					linewidth = 2
 				)
 			),
 			yaxis = list(
@@ -203,8 +194,9 @@ plotRiskPrediction <- function(
 			xaxis = list(
 				title = "",
 				showticklabels = FALSE
-			)
-		)
+			),
+			hoverlabel=list(bgcolor="white")
+		) 
 }
 
 
@@ -214,6 +206,7 @@ plotCalibration <- function(
 	fifths,
 	colorMap,
 	title = NULL,
+	outcome,
 	a,               # calibration intercept
 	b,               # calibration slope
 	c                # c-index
@@ -233,6 +226,7 @@ plotCalibration <- function(
 			x       = ~predicted,
 			y       = ~observed,
 			type    = "scatter",
+			mode    = "markers",
 			marker  = list(color = "blue"),
 			error_y = list(
 				type       = "data",
@@ -248,35 +242,40 @@ plotCalibration <- function(
 					x1        = fifths[1] / 100,
 					y0        = 0,
 					y1        = .5,
-					fillcolor = colorMap$color[1]
+					fillcolor = colorMap$color[1],
+					layer = "below"
 				),
 				addRectangle(
 					x0        = fifths[1] / 100,
 					x1        = fifths[2] / 100,
 					y0        = 0,
 					y1        = .5,
-					fillcolor = colorMap$color[2]
+					fillcolor = colorMap$color[2],
+					layer = "below"
 				),
 				addRectangle(
 					x0        = fifths[2] / 100,
 					x1        = fifths[3] / 100,
 					y0        = 0,
 					y1        = .5,
-					fillcolor = colorMap$color[3]
+					fillcolor = colorMap$color[3],
+					layer = "below"
 				),
 				addRectangle(
 					x0        = fifths[3] / 100,
 					x1        = fifths[4] / 100,
 					y0        = 0,
 					y1        = .5,
-					fillcolor = colorMap$color[4]
+					fillcolor = colorMap$color[4],
+					layer = "below"
 				),
 				addRectangle(
 					x0        = fifths[4] / 100,
 					x1        = .5,
 					y0        = 0,
 					y1        = .5,
-					fillcolor = colorMap$color[5]
+					fillcolor = colorMap$color[5],
+					layer = "below"
 				)
 			),
 			annotations = list(
@@ -298,7 +297,7 @@ plotCalibration <- function(
 					),
 					sep = "\n"
 				),
-				x = .45,
+				x = .42,
 				y = .08,
 				bgcolor     = "white",
 				opacity     = .6,
@@ -314,11 +313,17 @@ plotCalibration <- function(
 			),
 			title = title,
 			xaxis = list(
-				title = "Predicted 21-day mortality",
+				title = paste(
+					"Predicted 21-day",
+					outcome
+				),
 				range = c(-.01, .5)
 			),
 			yaxis = list(
-				title = "Observed 21-day mortality",
+				title = paste(
+					"Observed 21-day",
+					outcome
+				),
 				range = c(-.01, .5)
 			),
 			showlegend = FALSE
