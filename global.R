@@ -2,6 +2,7 @@ library(dplyr)
 library(shinyBS)
 library(shinyalert)
 library(data.table)
+library(highcharter)
 
 source("functions.R")
 

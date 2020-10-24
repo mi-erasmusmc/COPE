@@ -170,12 +170,12 @@ plotRiskPrediction <- function(
 					format          = '{y} %',
 					inside          = TRUE,
 					animation       = list(defer = 2000),
-					style           = list(fontSize = "22px")
+					style           = list(fontSize = "18px")
 				)
 			)
 		) %>%
 		highcharter::hc_tooltip(
-			formatter = JS(
+			formatter = highcharter::JS(
 				"function () {
             return '<b>' + this.series.name + '</b>';
         }"
@@ -189,7 +189,7 @@ plotRiskPrediction <- function(
 			min               = .5,
 			categories        = c(0, 1, 2),
 			tickmarkPlacement = "on",
-			labelsn           = list(enabled = FALSE)
+			labels            = list(enabled = FALSE)
 		) %>%
 		highcharter::hc_yAxis(
 			max   = rangeMax,
