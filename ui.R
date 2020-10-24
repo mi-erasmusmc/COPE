@@ -156,29 +156,31 @@ shiny::shinyUI(
 						condition = "input.calculatePredictionButton",
 						shinydashboard::box(
 							status = "primary",
-							title  = "Death within 21 days",
+							title  = shiny::uiOutput(
+								outputId = "titleMortalityRiskBox"
+							),
 							width  = 5,
 							height = "400px",
 							shinycssloaders::withSpinner(
 								type = 4,
-								plotly::plotlyOutput(
+								highcharter::highchartOutput(
 									outputId = "calculationPlotMortality",
-									height = "340px",
-									width = "90%"
+									height = "340px"
 								)
 							)
 						),
 						shinydashboard::box(
 							status = "primary",
-							title  = "ICU admission within 21 days",
+							title  = shiny::uiOutput(
+								outputId = "titleIcuRiskBox"
+							),
 							width  = 5,
 							height = "400px",
 							shinycssloaders::withSpinner(
 								type = 4,
-								plotly::plotlyOutput(
+								highcharter::highchartOutput(
 									outputId = "calculationPlotIcu",
-									height   = "340px",
-									width    = "90%"
+									height   = "340px"
 								)
 							)
 						),

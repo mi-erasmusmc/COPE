@@ -85,121 +85,122 @@ addRectangle <- function(
 	return(res)
 }
 
-
 plotRiskPrediction <- function(
-	predictionData, 
-	fifths,
-	riskFifth,
+	prediction,
 	colorMap,
+	currentRiskFifth,
+	riskFifths,
 	rangeMax
 ) {
 	
-	plotly::plot_ly() %>%
-		plotly::add_polygons(
-			mode = "markers",
-			x          = c(0, 0, 2, 2),
-			y          = c(0, fifths[1], fifths[1], 0),
-			fillcolor  = 'rgba(223, 251, 223, 0.2)',
-			text       = "Lowest risk",
-			hoveron    = "fills",
-			hoverinfo  = "text",
-			line       = list(width=0),
-			inherit    = FALSE,
-			showlegend = FALSE
+	riskFifthsExtended <- sort(
+		c(
+			0, riskFifths, rangeMax
+		)
+	)
+	
+	
+	
+	riskFifthsExtended <- diff(riskFifthsExtended)
+	
+	cols <- c(
+		rev(colorMap$color), 
+		"#3B6AA0"
+	)
+	
+	highcharter::highchart() %>%
+		highcharter::hc_add_series(
+			name = "Highest risk",
+			type = "area",
+			data = rep(riskFifthsExtended[5], 3)
 		) %>%
-		plotly::add_polygons(
-			x          = c(0, 0, 2, 2),
-			y          = c(fifths[1], fifths[2], fifths[2], fifths[1]),
-			fillcolor  = 'rgba(68,212,146, 0.4)',
-			text       = "Lower risk",
-			hoveron    = "fills",
-			hoverinfo  = "text",
-			line       = list(width=0),
-			inherit    = FALSE,
-			showlegend = FALSE
+		highcharter::hc_add_series(
+			name = "Higher risk",
+			type = "area",
+			data = rep(riskFifthsExtended[4], 3)
 		) %>%
-		plotly::add_polygons(
-			x          = c(0, 0, 2, 2),
-			y          = c(fifths[2], fifths[3], fifths[3], fifths[2]),
-			fillcolor  = 'rgba(245,235,103, 0.4)',
-			text       = "Intermediate risk",
-			hoveron    = "fills",
-			hoverinfo  = "text",
-			inherit    = FALSE,
-			line       = list(width=0),
-			showlegend = FALSE
+		highcharter::hc_add_series(
+			name = "Intermediate risk",
+			type = "area",
+			data = rep(riskFifthsExtended[3], 3)
 		) %>%
-		plotly::add_polygons(
-			x          = c(0, 0, 2, 2),
-			y          = c(fifths[3], fifths[4], fifths[4], fifths[3]),
-			fillcolor  = 'rgba(255,161,92, 0.4)',
-			text       = "Higher risk",
-			hoveron    = "fills",
-			hoverinfo  = "text",
-			inherit    = FALSE,
-			line       = list(width=0),
-			showlegend = FALSE
+		highcharter::hc_add_series(
+			name = "Lower risk",
+			type = "area",
+			data = rep(riskFifthsExtended[2], 3)
 		) %>%
-		plotly::add_polygons(
-			x          = c(0, 0, 2, 2),
-			y          = c(fifths[4], 100, 100, fifths[4]),
-			fillcolor  = 'rgba(250,35,62, 0.4)',
-			text       = "Highest risk",
-			hoveron    = "fills",
-			hoverinfo  = "text",
-			inherit    = FALSE,
-			line       = list(width=0),
-			showlegend = FALSE
+		highcharter::hc_add_series(
+			name = "Lowest risk",
+			type = "area",
+			data = rep(riskFifthsExtended[1], 3)
 		) %>%
-		plotly::add_annotations(
-			data = predictionData,
-			x = ~x,
-			y = ~y,
-			text = ~paste(
-				y,
-				"%"
+		highcharter::hc_add_series(
+			name = "Predicted risk",
+			data = data.frame(
+				x = 1,
+				y = prediction
 			),
-			bgcolor     = colorMap$color[riskFifth - 1],
-			bordercolor = "black",
-			borderwidth = 1,
-			showarrow   = FALSE,
-			standoff    = 4,
-			hoverinfo   = "none",
-			hoverformat = "%{1}f",
-			showlegend  = FALSE,
-			font        = list(
-				size = 18,
-				color = "black"
+			type = "column",
+			highcharter::hcaes(
+				x = x,
+				y = y
 			)
 		) %>%
-		plotly::layout(
-			shapes = list(
-				addRectangle(
-					x0 = .5,
-					x1 = 1.5,
-					y0 = 0,
-					y1 = ~y,
-					fillcolor = "#3B6AA0",
-					opacity = 1,
-					linewidth = 2
+		highcharter::hc_plotOptions(
+			area = list(
+				stacking  = "normal",
+				lineWidth = 0,
+				marker = list(
+					enabled   = FALSE,
+					lineWidth = 0,
+					lineColor = "#ffffff"
+				),
+				fillOpacity = .4
+			),
+			column = list(
+				borderColor = "#000000",
+				borderWidth = 2,
+				dataLabels  = list(
+					enabled         = TRUE,
+					backgroundColor = colorMap$color[currentRiskFifth - 1],
+					borderColor     = "#000000",
+					borderRadius    = 10,
+					borderWidth     = 2,
+					shadow          = TRUE,
+					format          = '{y} %',
+					inside          = TRUE,
+					animation       = list(defer = 2000),
+					style           = list(fontSize = "22px")
 				)
+			)
+		) %>%
+		highcharter::hc_tooltip(
+			formatter = JS(
+				"function () {
+            return '<b>' + this.series.name + '</b>';
+        }"
 			),
-			yaxis = list(
-				title = "Probability (%)",
-				range = c(
-					0,
-					rangeMax
-				)
-			),
-			xaxis = list(
-				title = "",
-				showticklabels = FALSE
-			),
-			hoverlabel=list(bgcolor="white")
-		) 
+			hideDelay     = 100,
+			followPointer = TRUE,
+			shared        = FALSE
+		) %>%
+		highcharter::hc_xAxis(
+			max               = 1.5,
+			min               = .5,
+			categories        = c(0, 1, 2),
+			tickmarkPlacement = "on",
+			labelsn           = list(enabled = FALSE)
+		) %>%
+		highcharter::hc_yAxis(
+			max   = rangeMax,
+			title = list(text = "Probability (%)")
+		) %>%
+		hc_colors(cols) %>%
+		highcharter::hc_legend(
+			enabled = FALSE
+		)
+	
 }
-
-
 
 plotCalibration <- function(
 	calibrationData,

@@ -47,7 +47,7 @@ calibrationSlope <- readRDS(
 )
 
 
-# ----- Color grid behind plotly output -----
+# ----- Color grid behind graph output -----
 colorMap <- data.frame(
 	fifth = 1:5,
 	color = c(
