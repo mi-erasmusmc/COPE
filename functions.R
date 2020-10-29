@@ -162,15 +162,20 @@ plotRiskPrediction <- function(
 				borderWidth = 2,
 				dataLabels  = list(
 					enabled         = TRUE,
-					backgroundColor = colorMap$color[currentRiskFifth - 1],
-					borderColor     = "#000000",
+					backgroundColor = "#f7f7f7",
+					borderColor     = colorMap$color[currentRiskFifth - 1],
 					borderRadius    = 10,
-					borderWidth     = 2,
-					shadow          = TRUE,
+					borderWidth     = 4,
 					format          = '{y} %',
-					inside          = TRUE,
+					verticalAlign   = "middle",
+					inside          = FALSE,
 					animation       = list(defer = 2000),
-					style           = list(fontSize = "18px")
+					style           = list(
+						color       = '#000000',
+						textOutline = FALSE,
+						fontSize    = "18px",
+						fontWeight  = "bold"
+					)
 				)
 			)
 		) %>%
@@ -195,7 +200,7 @@ plotRiskPrediction <- function(
 			max   = rangeMax,
 			title = list(text = "Probability (%)")
 		) %>%
-		hc_colors(cols) %>%
+		highcharter::hc_colors(cols) %>%
 		highcharter::hc_legend(
 			enabled = FALSE
 		)
