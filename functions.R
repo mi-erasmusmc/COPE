@@ -162,18 +162,18 @@ plotRiskPrediction <- function(
 				borderWidth = 2,
 				dataLabels  = list(
 					enabled         = TRUE,
-					backgroundColor = "#f7f7f7",
-					borderColor     = colorMap$color[currentRiskFifth - 1],
-					borderRadius    = 10,
-					borderWidth     = 4,
+					# backgroundColor = "#f7f7f7",
+					# borderColor     = colorMap$color[currentRiskFifth - 1],
+					borderRadius    = 0,
+					# borderWidth     = 4,
 					format          = '{y} %',
-					verticalAlign   = "middle",
+					# verticalAlign   = "top",
 					inside          = FALSE,
 					animation       = list(defer = 2000),
 					style           = list(
 						color       = '#000000',
 						textOutline = FALSE,
-						fontSize    = "18px",
+						fontSize    = "20px",
 						fontWeight  = "bold"
 					)
 				)

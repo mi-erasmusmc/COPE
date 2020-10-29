@@ -1,9 +1,14 @@
 shiny::shinyUI(
 	shinydashboard::dashboardPage(
 		skin      = "black",
-		title     = "ED-COVID",
+		title     = "COPE",
 		shinydashboard::dashboardHeader(
-			title = "Main title",
+			title = "COPE",
+			tags$li(
+				"Covid Outcome Prediction in the Emergency Department", 
+				class = "dropdown", 
+				style = "font-size:20px;padding-right:30px;padding-top:10px"
+			),
 			tags$li(
 				div(
 					img(
@@ -194,7 +199,7 @@ shiny::shinyUI(
 							),
 							tags$head(
 								tags$style("#resultExplanationBox{
-                                 font-size: 14px;
+                                 font-size: 15px;
                                  }"
 								)
 							)
@@ -250,7 +255,7 @@ shiny::shinyUI(
 							)
 						),
 						tags$head(
-							tags$style(".help-block p {font-size: 14px;}")
+							tags$style(".help-block p {font-size: 15px;}")
 						)
 					),
 					shinydashboard::box(
@@ -279,7 +284,7 @@ shiny::shinyUI(
 									"
 								)
 							)
-						),
+						)
 					)
 				),
 				shinydashboard::tabItem(
@@ -291,12 +296,12 @@ shiny::shinyUI(
 								title  = "Calibration plot for: Hospital 1",
 								status = "primary",
 								width  = 3,
-								# height = "350px",
+								height = "350px",
 								shinycssloaders::withSpinner(
 									type = 4,
 									plotly::plotlyOutput(
 										outputId = "calibrationMortalityCenter1",
-										# height = "280px"
+										height = "280px"
 									)
 								)
 							),
@@ -304,12 +309,12 @@ shiny::shinyUI(
 								title  = "Hospital 2",
 								status = "primary",
 								width  = 3,
-								# height = "350px",
+								height = "350px",
 								shinycssloaders::withSpinner(
 									type = 4,
 									plotly::plotlyOutput(
 										outputId = "calibrationMortalityCenter2",
-										# height = "280px"
+										height = "280px"
 									)
 								)
 							),
@@ -317,12 +322,12 @@ shiny::shinyUI(
 								title  = "Hospital 3",
 								status = "primary",
 								width  = 3,
-								# height = "350px",
+								height = "350px",
 								shinycssloaders::withSpinner(
 									type = 4,
 									plotly::plotlyOutput(
 										outputId = "calibrationMortalityCenter3",
-										# height = "280px"
+										height = "280px"
 									)
 								)
 							),
@@ -330,12 +335,12 @@ shiny::shinyUI(
 								title  = "Hospital 4",
 								status = "primary",
 								width  = 3,
-								# height = "350px",
+								height = "350px",
 								shinycssloaders::withSpinner(
 									type = 4,
 									plotly::plotlyOutput(
 										outputId = "calibrationMortalityCenter4",
-										# height = "280px"
+										height = "280px"
 									)
 								)
 							),
@@ -355,12 +360,12 @@ shiny::shinyUI(
 								title  = "Calibration plot for: Hospital 1",
 								status = "primary",
 								width  = 3,
-								# height = "350px",
+								height = "350px",
 								shinycssloaders::withSpinner(
 									type = 4,
 									plotly::plotlyOutput(
 										outputId = "calibrationIcuHospital1",
-										# height = "280px"
+										height = "280px"
 									)
 								)
 							),
@@ -368,18 +373,18 @@ shiny::shinyUI(
 								title  = "Hospital 2",
 								status = "primary",
 								width  = 3,
-								# height = "350px"
+								height = "350px"
 							),
 							shinydashboard::box(
 								title  = "Hospital 3",
 								status = "primary",
 								width  = 3,
-								# height = "350px",
+								height = "350px",
 								shinycssloaders::withSpinner(
 									type = 4,
 									plotly::plotlyOutput(
 										outputId = "calibrationIcuHospital3",
-										# height = "280px"
+										height = "280px"
 									)
 								)
 							),
@@ -387,13 +392,13 @@ shiny::shinyUI(
 								title  = "Hospital 4",
 								status = "primary",
 								width  = 3,
-								# height = "350px"
+								height = "350px"
 							),
 							shinydashboard::box(
 								title  = "Evaluation metrics",
 								status = "primary",
 								width  = 12,
-								# height = "280px",
+								height = "280px",
 								shiny::includeHTML(
 									"html/performance_text.html"
 								)
