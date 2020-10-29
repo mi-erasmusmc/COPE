@@ -5,19 +5,22 @@ shiny::shinyUI(
 		shinydashboard::dashboardHeader(
 			title = "COPE",
 			tags$li(
-				"Covid Outcome Prediction in the Emergency Department", 
-				class = "dropdown", 
-				style = "font-size:20px;padding-right:30px;padding-top:10px"
+				tags$div(
+					"Covid Outcome Prediction in the Emergency Department", 
+					style = "font-size:13px;padding-top:15px;
+					padding-right:8px;"
+				),
+				class = "dropdown"
 			),
 			tags$li(
 				div(
 					img(
 						src    = 'logo_erasmus.png',
 						title  = "Erasmus MC", 
-						height = "46", 
-						width  = "110px"
+						height = "26", 
+						width  = "60px"
 					),
-					style = "padding-top:2px; padding-bottom:0px; padding-right:8px"
+					style = "padding-top:10px;padding-bottom:0px;padding-right:2px"
 				),
 				class = "dropdown"
 			)
@@ -66,7 +69,7 @@ shiny::shinyUI(
 					shinydashboard::box(
 						status = "primary",
 						width  = 2,
-						height = "400px",
+						# height = "400px",
 						shinyBS::popify(
 							shiny::numericInput(
 								inputId = "age",
@@ -398,7 +401,7 @@ shiny::shinyUI(
 								title  = "Evaluation metrics",
 								status = "primary",
 								width  = 12,
-								height = "280px",
+								# height = "280px",
 								shiny::includeHTML(
 									"html/performance_text.html"
 								)
