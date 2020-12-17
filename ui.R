@@ -1,18 +1,26 @@
 shiny::shinyUI(
 	shinydashboard::dashboardPage(
 		skin      = "black",
-		title     = "ED-COVID",
+		title     = "COPE",
 		shinydashboard::dashboardHeader(
-			title = "Main title",
+			title = "COPE",
+			tags$li(
+				tags$div(
+					"Covid Outcome Prediction in the Emergency Department", 
+					style = "font-size:13px;padding-top:15px;
+					padding-right:8px;"
+				),
+				class = "dropdown"
+			),
 			tags$li(
 				div(
 					img(
 						src    = 'logo_erasmus.png',
 						title  = "Erasmus MC", 
-						height = "46", 
-						width  = "110px"
+						height = "26", 
+						width  = "60px"
 					),
-					style = "padding-top:2px; padding-bottom:0px; padding-right:8px"
+					style = "padding-top:10px;padding-bottom:0px;padding-right:2px"
 				),
 				class = "dropdown"
 			)
@@ -61,7 +69,7 @@ shiny::shinyUI(
 					shinydashboard::box(
 						status = "primary",
 						width  = 2,
-						height = "400px",
+						# height = "400px",
 						shinyBS::popify(
 							shiny::numericInput(
 								inputId = "age",
@@ -156,56 +164,58 @@ shiny::shinyUI(
 						condition = "input.calculatePredictionButton",
 						shinydashboard::box(
 							status = "primary",
-							title  = "Death within 21 days",
+							title  = shiny::uiOutput(
+								outputId = "titleMortalityRiskBox"
+							),
 							width  = 5,
 							height = "400px",
 							shinycssloaders::withSpinner(
 								type = 4,
-								plotly::plotlyOutput(
+								highcharter::highchartOutput(
 									outputId = "calculationPlotMortality",
-									height = "340px",
-									width = "90%"
+									height = "340px"
 								)
 							)
 						),
 						shinydashboard::box(
 							status = "primary",
-							title  = "ICU admission within 21 days",
+							title  = shiny::uiOutput(
+								outputId = "titleIcuRiskBox"
+							),
 							width  = 5,
 							height = "400px",
 							shinycssloaders::withSpinner(
 								type = 4,
-								plotly::plotlyOutput(
+								highcharter::highchartOutput(
 									outputId = "calculationPlotIcu",
-									height   = "340px",
-									width    = "90%"
+									height   = "340px"
 								)
 							)
 						),
 						shinydashboard::box(
 							status = "primary",
 							title  = "Result Explanation",
-							width  = 7,
-							height = "300px",
+							width  = 12,
+							# height = "300px",
 							shiny::htmlOutput(
 								outputId = "resultExplanationBox"
 							),
 							tags$head(
 								tags$style("#resultExplanationBox{
-                                 font-size: 14px;
+                                 font-size: 15px;
                                  }"
 								)
 							)
-						),
-						shinydashboard::box(
-							status = "warning",
-							title = "Disclaimer",
-							width = 5,
-							height = "300px",
-							shiny::htmlOutput(
-								outputId = "disclaimer"
-							)
 						)
+						# shinydashboard::box(
+						# 	status = "warning",
+						# 	title = "Disclaimer",
+						# 	width = 12,
+						# 	# height = "300px",
+						# 	shiny::htmlOutput(
+						# 		outputId = "disclaimer"
+						# 	)
+						# )
 					)
 				),
 				shinydashboard::tabItem(
@@ -220,7 +230,7 @@ shiny::shinyUI(
 						title  = "Mortality",
 						status = "primary",
 						width  = 12,
-						height = "300px",
+						# height = "300px",
 						shiny::withMathJax(
 							shiny::helpText(
 								shiny::p(
@@ -248,14 +258,14 @@ shiny::shinyUI(
 							)
 						),
 						tags$head(
-							tags$style(".help-block p {font-size: 14px;}")
+							tags$style(".help-block p {font-size: 15px;}")
 						)
 					),
 					shinydashboard::box(
 						title  = "ICU admission",
 						status = "primary",
 						width  = 12,
-						height = "300px",
+						# height = "300px",
 						shiny::withMathJax(
 							shiny::helpText(
 								shiny::p(
@@ -277,7 +287,7 @@ shiny::shinyUI(
 									"
 								)
 							)
-						),
+						)
 					)
 				),
 				shinydashboard::tabItem(
@@ -341,7 +351,7 @@ shiny::shinyUI(
 								title  = "Evaluation metrics",
 								status = "primary",
 								width  = 12,
-								height = "280px",
+								# height = "280px",
 								shiny::includeHTML(
 									"html/performance_text.html"
 								)
@@ -391,7 +401,7 @@ shiny::shinyUI(
 								title  = "Evaluation metrics",
 								status = "primary",
 								width  = 12,
-								height = "280px",
+								# height = "280px",
 								shiny::includeHTML(
 									"html/performance_text.html"
 								)

@@ -24,20 +24,11 @@ shiny::shinyServer(
 					is.numeric(input$ldh) &&
 					is.numeric(input$crp) &&
 					data.table::between(input$age, 0, 100) &&
-					data.table::between(input$respiratoryRate, 10, 40) &&
+					data.table::between(input$respiratoryRate, 10, 60) &&
 					data.table::between(input$ldh, 100, 1000) &&
 					data.table::between(input$crp, 1, 400)
 			}
 		)
-		
-		# output$admissible <- shiny::reactive(
-		# 	{
-		# 		as.logical(admissibleInput())
-		# 	}
-		# )
-
-
-		# outputOptions(output, "admissible", suspendWhenHidden = FALSE, priority = 0)
 		
 		shiny::observeEvent(
 			input$calculatePredictionButton,
@@ -135,63 +126,80 @@ shiny::shinyServer(
 			}
 		)
 		
-		output$calculationPlotMortality <- plotly::renderPlotly(
+		output$calculationPlotMortality <- highcharter::renderHighchart(
 			{
-				shiny::req(
-					admissibleInput()
-				)
+				shiny::req(admissibleInput())
 				
 				prediction <- currentPrediction()
+				cols       <- c(rev(colorMap$color), "#3B6AA0")
+				riskFifth  <- riskFifthMortality()
 				
-				rangeMax <- ifelse(
-					test = prediction$icu > 30 || prediction$mortality > 30, 
-					yes  = 60,
-					no   = 35
-				)
-				
-				predictionData <- data.frame(
-					x = 1,
-					y = prediction$mortality
-				)
+				maxRisk   <- max(prediction$mortality, prediction$icu)
+				test      <- c( 5, 10, 20, 30, 50, 100)
+				threshold <- c(10, 20, 30, 40, 60, 100)
+				rangeMax  <- min(threshold[maxRisk < test])
 				
 				plotRiskPrediction(
-					predictionData = predictionData,
-					fifths         = fifths$mortality,
-					riskFifth      = riskFifthMortality(),
-					colorMap       = colorMap,
-					rangeMax       = rangeMax
+					prediction       = prediction$mortality,
+					colorMap         = colorMap,
+					currentRiskFifth = riskFifth,
+					riskFifths       = fifths$mortality,
+					rangeMax         = rangeMax
 				)
 				
 			}
 		)
 		
-		output$calculationPlotIcu <- plotly::renderPlotly(
+		output$titleMortalityRiskBox <- shiny::renderPrint(
+			{
+				shiny::req(admissibleInput())
+				shiny::HTML(
+					cat(
+						"<p>Death within 21 days: <b>",
+						currentPrediction()$mortality,
+						"%</b>"
+					),
+					"</p>"
+				)
+			}
+		)
+		
+		output$titleIcuRiskBox <- shiny::renderPrint(
+			{
+				shiny::req(admissibleInput())
+				shiny::HTML(
+					cat(
+						"<p>ICU admission within 21 days: <b>",
+						currentPrediction()$icu,
+						"%</b>"
+					),
+					"</p>"
+				)
+			}
+		)
+		
+		output$calculationPlotIcu <- highcharter::renderHighchart(
 			{
 				shiny::req(
 					admissibleInput()
 				)
 				
 				prediction <- currentPrediction()
+				cols <- c(rev(colorMap$color), "#3B6AA0")
+				riskFifth <- riskFifthIcu()
 				
-				rangeMax <- ifelse(
-					test = prediction$icu > 30 || prediction$mortality > 30,
-					yes  = 60,
-					no   = 35
-				)
-				
-				predictionData <- data.frame(
-					x = 1,
-					y = prediction$icu
-				)
+				maxRisk <- max(prediction$mortality, prediction$icu)
+				test      <- c( 5, 10, 20, 30, 50, 100)
+				threshold <- c(10, 20, 30, 40, 60, 100)
+				rangeMax  <- min(threshold[maxRisk < test])
 				
 				plotRiskPrediction(
-					predictionData = predictionData,
-					fifths         = fifths$icu,
-					riskFifth      = riskFifthIcu(),
-					colorMap       = colorMap,
-					rangeMax       = rangeMax
+					prediction = prediction$icu,
+					colorMap = colorMap,
+					currentRiskFifth = riskFifth,
+					riskFifths = fifths$icu,
+					rangeMax = rangeMax
 				)
-				
 			}
 		)
 		
