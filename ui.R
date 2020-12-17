@@ -6,21 +6,21 @@ shiny::shinyUI(
 			title = "COPE",
 			tags$li(
 				tags$div(
-					"Covid Outcome Prediction in the Emergency Department", 
-					style = "font-size:13px;padding-top:15px;
-					padding-right:8px;"
+					"Covid Outcome Prediction in the Emergency Department",
+					style = "padding-top:14px;font-style:italic;
+					padding-right:10px;font-size: min(3vw, 14px)"
 				),
 				class = "dropdown"
 			),
 			tags$li(
 				div(
 					img(
-						src    = 'logo_erasmus.png',
-						title  = "Erasmus MC", 
-						height = "26", 
-						width  = "60px"
-					),
-					style = "padding-top:10px;padding-bottom:0px;padding-right:2px"
+						src    = "EMC.jpg",
+						title  = "Erasmus MC",
+						height = "50px",
+						width = "50px"
+					)
+					# style = "padding-top:10px;padding-bottom:0px;padding-right:2px"
 				),
 				class = "dropdown"
 			)
@@ -101,7 +101,7 @@ shiny::shinyUI(
 								),
 								value   = 25,
 								min     = 10,
-								max     = 40
+								max     = 60
 							),
 							title   = "<b>Respiratory rate</b>",
 							content = shiny::includeHTML(
