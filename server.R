@@ -63,10 +63,9 @@ shiny::shinyServer(
 		currentPrediction <- shiny::eventReactive(
 			input$calculatePredictionButton,
 			{
-				mortalityRisk <- survivalProbability(
-					baselineHazard  = baselineHazard$mortality,
-					linearPredictor = mortalityLinearPredictor(),
-					center          = 13.13958
+				mortalityRisk <- logisticProbability(
+					intercept = intercepts$mortality,
+					linearPredictor = mortalityLinearPredictor()
 				)
 				
 				icuLinearPredictor <- betaCoefficients$icu * (mortalityLinearPredictor() - 13.13958)

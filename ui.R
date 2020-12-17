@@ -69,7 +69,6 @@ shiny::shinyUI(
 					shinydashboard::box(
 						status = "primary",
 						width  = 2,
-						# height = "400px",
 						shinyBS::popify(
 							shiny::numericInput(
 								inputId = "age",
@@ -106,6 +105,27 @@ shiny::shinyUI(
 							title   = "<b>Respiratory rate</b>",
 							content = shiny::includeHTML(
 								path = "html/calculation_respiratoryRate.html"
+							),
+							placement = "bottom",
+							options   = list(
+								container = "body"
+							)
+						),
+						shinyBS::popify(
+							shiny::numericInput(
+								inputId = "<b>Oxygen saturation</b>",
+								label   = shiny::div(
+									shiny::HTML(
+										"Age <em>(years)</em>"
+									)
+								),
+								value   = 66,
+								min     = 0,
+								max     = 100
+							),
+							title   = "<b>Age</b>",
+							content = shiny::includeHTML(
+								path = "html/calculation_age.html"
 							),
 							placement = "bottom",
 							options   = list(

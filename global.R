@@ -11,9 +11,14 @@ betaCoefficients <- readRDS(
 	"Data/betaCoefficients.rds"
 )
 
-baselineHazard <- list(
-	mortality = 0.0632205,
-	icu       = 0.06078579
+# baselineHazard <- list(
+# 	mortality = 0.0632205,
+# 	icu       = 0.06078579
+# )
+
+intercepts <- list(
+	mortality = -5.13,
+	icu       = -.1017
 )
 
 fifths <- list(
