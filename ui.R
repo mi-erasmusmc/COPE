@@ -14,11 +14,14 @@ shiny::shinyUI(
 			),
 			tags$li(
 				div(
-					img(
-						src    = "EMC.jpg",
-						title  = "Erasmus MC",
-						height = "50px",
-						width = "50px"
+					tags$a(
+						img(
+							src    = "EMC.jpg",
+							title  = "Erasmus MC",
+							height = "50px",
+							width = "50px"
+						),
+						href = "https://google.com"
 					)
 					# style = "padding-top:10px;padding-bottom:0px;padding-right:2px"
 				),
