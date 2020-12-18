@@ -77,7 +77,7 @@ shiny::shinyUI(
 										"Age <em>(years)</em>"
 									)
 								),
-								value   = 66,
+								value   = 75,
 								min     = 0,
 								max     = 100
 							),
@@ -98,7 +98,7 @@ shiny::shinyUI(
 										"<b>Respiratory rate</b> <em>(per min)</em>"
 									)
 								),
-								value   = 25,
+								value   = 17,
 								min     = 10,
 								max     = 60
 							),
@@ -113,19 +113,19 @@ shiny::shinyUI(
 						),
 						shinyBS::popify(
 							shiny::numericInput(
-								inputId = "<b>Oxygen saturation</b>",
+								inputId = "saturation",
 								label   = shiny::div(
 									shiny::HTML(
-										"Age <em>(years)</em>"
+										"<b>Oxygen saturation</b> <em>(%)</em>"
 									)
 								),
-								value   = 66,
+								value   = 98,
 								min     = 0,
 								max     = 100
 							),
-							title   = "<b>Age</b>",
+							title   = "<b>Oxygen saturation</b>",
 							content = shiny::includeHTML(
-								path = "html/calculation_age.html"
+								path = "html/calculation_saturation.html"
 							),
 							placement = "bottom",
 							options   = list(
@@ -140,7 +140,7 @@ shiny::shinyUI(
 										"LDH <em>(U per L)</em>"
 									)
 								),
-								value   = 293,
+								value   = 727,
 								min     = 100,
 								max     = 1000
 							),
@@ -161,13 +161,55 @@ shiny::shinyUI(
 										"CRP <em>(mg per L)</em>"
 									)
 								),
-								value   = 85,
+								value   = 30,
 								min     = 1,
 								max     = 400
 							),
 							title   = "<b>CRP</b>",
 							content = shiny::includeHTML(
 								path = "html/calculation_crp.html"
+							),
+							placement = "bottom",
+							options   = list(
+								container = "body"
+							)
+						),
+						shinyBS::popify(
+							shiny::numericInput(
+								inputId = "albumin",
+								label   = shiny::div(
+									shiny::HTML(
+										"Serum albumin <em>(g per L)</em>"
+									)
+								),
+								value   = 26,
+								min     = 10,
+								max     = 60
+							),
+							title   = "<b>Serum albumin</b>",
+							content = shiny::includeHTML(
+								path = "html/calculation_albumin.html"
+							),
+							placement = "bottom",
+							options   = list(
+								container = "body"
+							)
+						),
+						shinyBS::popify(
+							shiny::numericInput(
+								inputId = "urea",
+								label   = shiny::div(
+									shiny::HTML(
+										"Serum urea <em>(mmol per L)</em>"
+									)
+								),
+								value   = 1.7,
+								min     = 1,
+								max     = 80
+							),
+							title   = "<b>Serum urea</b>",
+							content = shiny::includeHTML(
+								path = "html/calculation_urea.html"
 							),
 							placement = "bottom",
 							options   = list(
@@ -188,12 +230,12 @@ shiny::shinyUI(
 								outputId = "titleMortalityRiskBox"
 							),
 							width  = 5,
-							height = "400px",
+							height = "576px",
 							shinycssloaders::withSpinner(
 								type = 4,
 								highcharter::highchartOutput(
 									outputId = "calculationPlotMortality",
-									height = "340px"
+									height = "500px"
 								)
 							)
 						),
@@ -203,12 +245,12 @@ shiny::shinyUI(
 								outputId = "titleIcuRiskBox"
 							),
 							width  = 5,
-							height = "400px",
+							height = "576px",
 							shinycssloaders::withSpinner(
 								type = 4,
 								highcharter::highchartOutput(
 									outputId = "calculationPlotIcu",
-									height   = "340px"
+									height   = "500px"
 								)
 							)
 						),
@@ -227,15 +269,6 @@ shiny::shinyUI(
 								)
 							)
 						)
-						# shinydashboard::box(
-						# 	status = "warning",
-						# 	title = "Disclaimer",
-						# 	width = 12,
-						# 	# height = "300px",
-						# 	shiny::htmlOutput(
-						# 		outputId = "disclaimer"
-						# 	)
-						# )
 					)
 				),
 				shinydashboard::tabItem(
@@ -254,7 +287,7 @@ shiny::shinyUI(
 						shiny::withMathJax(
 							shiny::helpText(
 								shiny::p(
-									"The probability of mortality within 21 days
+									"The probability of mortality within 28 days
 								was estimated using a Cox proportional hazards
 								model. The natural logarithm of the hazard ratio
 								is given by:
@@ -265,7 +298,7 @@ shiny::shinyUI(
 								1.041\\times\\log(LDH) - 
 								14.94
 								$$
-								Then the probability of death within 21 days is:
+								Then the probability of death within 28 days is:
 								$$
 								\\Pr(Death) = 1 - \\exp\\bigg(-0.06322\\times\\exp\\Big(\\log(HR_m)\\Big)\\bigg),
 								$$
@@ -290,7 +323,7 @@ shiny::shinyUI(
 							shiny::helpText(
 								shiny::p(
 									"The probability of admission to the ICU 
-									within 21 days was estimated using a 
+									within 28 days was estimated using a 
 									re-calibrated version of the model for
 									21-day mortality. More specifically, the 
 									natural logarithm of the hazard ratio for

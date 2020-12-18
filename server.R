@@ -8,11 +8,13 @@ shiny::shinyServer(
 		currentInputData <- shiny::reactive(
 			{
 				data.frame(
-					time            = 4,
 					age             = input$age,
 					respiratoryRate = input$respiratoryRate,
+					saturation      = input$saturation,
 					crp             = input$crp,
-					ldh             = input$ldh
+					ldh             = input$ldh,
+					albumin         = input$albumin,
+					urea            = input$urea
 				)
 			}
 		)
@@ -55,7 +57,8 @@ shiny::shinyServer(
 				
 				createLinearPredictor(
 					modelMatrix = modelMatrix,
-					beta        = betaCoefficients$mortality
+					beta        = betaCoefficients$mortality,
+					intercept   = intercepts$mortality
 				)
 			}
 		)
@@ -64,16 +67,14 @@ shiny::shinyServer(
 			input$calculatePredictionButton,
 			{
 				mortalityRisk <- logisticProbability(
-					intercept = intercepts$mortality,
 					linearPredictor = mortalityLinearPredictor()
 				)
 				
-				icuLinearPredictor <- betaCoefficients$icu * (mortalityLinearPredictor() - 13.13958)
+				icuLinearPredictor <- betaCoefficients$icu * (mortalityLinearPredictor()) +
+					intercepts$icu
 				
-				icuRisk <- survivalProbability(
-					baselineHazard  = baselineHazard$icu,
-					linearPredictor = icuLinearPredictor,
-					center          = -.8952993 
+				icuRisk <- logisticProbability(
+					linearPredictor = icuLinearPredictor
 				)
 				
 				prediction <- list(

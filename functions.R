@@ -1,13 +1,14 @@
 createLinearPredictor <- function(
 	modelMatrix,
-	beta
+	beta,
+	intercept
 ) {
 	beta <- matrix(
 		beta,
 		ncol = 1
 	)
 	
-	linearPredictor <- modelMatrix %*% beta
+	linearPredictor <- modelMatrix %*% beta + intercept
 	return(linearPredictor)
 }
 
@@ -23,10 +24,9 @@ createLinearPredictor <- function(
 # }
 
 logisticProbability <- function(
-	intercept,
 	linearPredictor
 ) {
-	res <- 1 / (1 + exp(intercept + linearPredictor))
+	res <- 1 / (1 + exp(-linearPredictor))
 	return(round(100 * res, 1))
 }
 
