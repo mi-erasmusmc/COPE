@@ -23,16 +23,16 @@ intercepts <- list(
 
 fifths <- list(
 	mortality = c(
-		.020562059 * 100,
-		.047966477 * 100,
-		.090997030 * 100,
-		.182960687 * 100
+		.01291878 * 100,
+		.03384067 * 100,
+		.06871251 * 100,
+		.13964134 * 100
 	),
 	icu = c(
-		.06322953 * 100,
-		.11972550 * 100,
-		.19091041 * 100,
-		.31256813 * 100
+		.06009314 * 100,
+		.10752445 * 100,
+		.15796628 * 100,
+		.23229147 * 100
 	)
 )
 
@@ -87,15 +87,16 @@ table1Long <- readRDS(
 
 
 transformationsMortality <- list(
-	time            = identity,
 	age             = identity,
 	respiratoryRate = log,
+	saturation      = identity,
 	crp             = log,
-	ldh             = log
+	ldh             = log,
+	albumin         = log,
+	urea            = log
 )
 
 transformationsIcu <- list(
-	lp  = identity,
-	age = identity
+	lp  = identity
 )
 
