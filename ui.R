@@ -224,7 +224,8 @@ shiny::shinyUI(
 							shiny::actionButton(
 								inputId = "calculatePredictionButton",
 								label   = "Calculate",
-								icon    = shiny::icon("calculator")
+								icon    = shiny::icon("calculator"),
+								class   = "btn-lg"
 							)
 						)
 					),

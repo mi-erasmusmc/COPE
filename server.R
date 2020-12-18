@@ -155,7 +155,7 @@ shiny::shinyServer(
 				shiny::req(admissibleInput())
 				shiny::HTML(
 					cat(
-						"<p>Death within 21 days: <b>",
+						"<p>Death within 28 days: <b>",
 						currentPrediction()$mortality,
 						"%</b>"
 					),
@@ -169,7 +169,7 @@ shiny::shinyServer(
 				shiny::req(admissibleInput())
 				shiny::HTML(
 					cat(
-						"<p>ICU admission within 21 days: <b>",
+						"<p>ICU admission within 28 days: <b>",
 						currentPrediction()$icu,
 						"%</b>"
 					),
