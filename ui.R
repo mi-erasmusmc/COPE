@@ -68,158 +68,164 @@ shiny::shinyUI(
 					tabName = "calculation",
 					shinydashboard::box(
 						status = "primary",
-						width  = 2,
-						shinyBS::popify(
-							shiny::numericInput(
-								inputId = "age",
-								label   = shiny::div(
-									shiny::HTML(
-										"Age <em>(years)</em>"
-									)
+						width  = 4,
+						column(
+							width = 6,
+							shinyBS::popify(
+								shiny::numericInput(
+									inputId = "age",
+									label   = shiny::div(
+										shiny::HTML(
+											"Age <em>(years)</em>"
+										)
+									),
+									value   = 75,
+									min     = 0,
+									max     = 100
 								),
-								value   = 75,
-								min     = 0,
-								max     = 100
+								title   = "<b>Age</b>",
+								content = shiny::includeHTML(
+									path = "html/calculation_age.html"
+								),
+								placement = "bottom",
+								options   = list(
+									container = "body"
+								)
 							),
-							title   = "<b>Age</b>",
-							content = shiny::includeHTML(
-								path = "html/calculation_age.html"
+							shinyBS::popify(
+								shiny::numericInput(
+									inputId = "respiratoryRate",
+									label   = shiny::div(
+										shiny::HTML(
+											"<b>Respiratory rate</b> <em>(per min)</em>"
+										)
+									),
+									value   = 17,
+									min     = 10,
+									max     = 60
+								),
+								title   = "<b>Respiratory rate</b>",
+								content = shiny::includeHTML(
+									path = "html/calculation_respiratoryRate.html"
+								),
+								placement = "bottom",
+								options   = list(
+									container = "body"
+								)
 							),
-							placement = "bottom",
-							options   = list(
-								container = "body"
+							shinyBS::popify(
+								shiny::numericInput(
+									inputId = "saturation",
+									label   = shiny::div(
+										shiny::HTML(
+											"<b>Oxygen saturation</b> <em>(%)</em>"
+										)
+									),
+									value   = 98,
+									min     = 0,
+									max     = 100
+								),
+								title   = "<b>Oxygen saturation</b>",
+								content = shiny::includeHTML(
+									path = "html/calculation_saturation.html"
+								),
+								placement = "bottom",
+								options   = list(
+									container = "body"
+								)
+							),
+							shinyBS::popify(
+								shiny::numericInput(
+									inputId = "ldh",
+									label   = shiny::div(
+										shiny::HTML(
+											"LDH <em>(U per L)</em>"
+										)
+									),
+									value   = 727,
+									min     = 100,
+									max     = 1000
+								),
+								title   = "<b>LDH</b>",
+								content = shiny::includeHTML(
+									path = "html/calculation_ldh.html"
+								),
+								placement = "bottom",
+								options   = list(
+									container = "body"
+								)
 							)
 						),
-						shinyBS::popify(
-							shiny::numericInput(
-								inputId = "respiratoryRate",
-								label   = shiny::div(
-									shiny::HTML(
-										"<b>Respiratory rate</b> <em>(per min)</em>"
-									)
+						column(
+							width = 6,
+							shinyBS::popify(
+								shiny::numericInput(
+									inputId = "crp",
+									label   = shiny::div(
+										shiny::HTML(
+											"CRP <em>(mg per L)</em>"
+										)
+									),
+									value   = 30,
+									min     = 1,
+									max     = 400
 								),
-								value   = 17,
-								min     = 10,
-								max     = 60
-							),
-							title   = "<b>Respiratory rate</b>",
-							content = shiny::includeHTML(
-								path = "html/calculation_respiratoryRate.html"
-							),
-							placement = "bottom",
-							options   = list(
-								container = "body"
-							)
-						),
-						shinyBS::popify(
-							shiny::numericInput(
-								inputId = "saturation",
-								label   = shiny::div(
-									shiny::HTML(
-										"<b>Oxygen saturation</b> <em>(%)</em>"
-									)
+								title   = "<b>CRP</b>",
+								content = shiny::includeHTML(
+									path = "html/calculation_crp.html"
 								),
-								value   = 98,
-								min     = 0,
-								max     = 100
+								placement = "bottom",
+								options   = list(
+									container = "body"
+								)
 							),
-							title   = "<b>Oxygen saturation</b>",
-							content = shiny::includeHTML(
-								path = "html/calculation_saturation.html"
-							),
-							placement = "bottom",
-							options   = list(
-								container = "body"
-							)
-						),
-						shinyBS::popify(
-							shiny::numericInput(
-								inputId = "ldh",
-								label   = shiny::div(
-									shiny::HTML(
-										"LDH <em>(U per L)</em>"
-									)
+							shinyBS::popify(
+								shiny::numericInput(
+									inputId = "albumin",
+									label   = shiny::div(
+										shiny::HTML(
+											"Serum albumin <em>(g per L)</em>"
+										)
+									),
+									value   = 26,
+									min     = 10,
+									max     = 60
 								),
-								value   = 727,
-								min     = 100,
-								max     = 1000
-							),
-							title   = "<b>LDH</b>",
-							content = shiny::includeHTML(
-								path = "html/calculation_ldh.html"
-							),
-							placement = "bottom",
-							options   = list(
-								container = "body"
-							)
-						),
-						shinyBS::popify(
-							shiny::numericInput(
-								inputId = "crp",
-								label   = shiny::div(
-									shiny::HTML(
-										"CRP <em>(mg per L)</em>"
-									)
+								title   = "<b>Serum albumin</b>",
+								content = shiny::includeHTML(
+									path = "html/calculation_albumin.html"
 								),
-								value   = 30,
-								min     = 1,
-								max     = 400
+								placement = "bottom",
+								options   = list(
+									container = "body"
+								)
 							),
-							title   = "<b>CRP</b>",
-							content = shiny::includeHTML(
-								path = "html/calculation_crp.html"
-							),
-							placement = "bottom",
-							options   = list(
-								container = "body"
-							)
-						),
-						shinyBS::popify(
-							shiny::numericInput(
-								inputId = "albumin",
-								label   = shiny::div(
-									shiny::HTML(
-										"Serum albumin <em>(g per L)</em>"
-									)
+							shinyBS::popify(
+								shiny::numericInput(
+									inputId = "urea",
+									label   = shiny::div(
+										shiny::HTML(
+											"Serum urea <em>(mmol per L)</em>"
+										)
+									),
+									value   = 1.7,
+									min     = 1,
+									max     = 80
 								),
-								value   = 26,
-								min     = 10,
-								max     = 60
-							),
-							title   = "<b>Serum albumin</b>",
-							content = shiny::includeHTML(
-								path = "html/calculation_albumin.html"
-							),
-							placement = "bottom",
-							options   = list(
-								container = "body"
-							)
-						),
-						shinyBS::popify(
-							shiny::numericInput(
-								inputId = "urea",
-								label   = shiny::div(
-									shiny::HTML(
-										"Serum urea <em>(mmol per L)</em>"
-									)
+								title   = "<b>Serum urea</b>",
+								content = shiny::includeHTML(
+									path = "html/calculation_urea.html"
 								),
-								value   = 1.7,
-								min     = 1,
-								max     = 80
+								placement = "bottom",
+								options   = list(
+									container = "body"
+								)
 							),
-							title   = "<b>Serum urea</b>",
-							content = shiny::includeHTML(
-								path = "html/calculation_urea.html"
-							),
-							placement = "bottom",
-							options   = list(
-								container = "body"
+							shiny::actionButton(
+								inputId = "calculatePredictionButton",
+								label   = "Calculate",
+								icon    = shiny::icon("calculator")
 							)
-						),
-						shiny::actionButton(
-							inputId = "calculatePredictionButton",
-							label   = "Calculate",
-							icon    = shiny::icon("calculator")
 						)
 					),
 					shiny::conditionalPanel(
@@ -229,13 +235,13 @@ shiny::shinyUI(
 							title  = shiny::uiOutput(
 								outputId = "titleMortalityRiskBox"
 							),
-							width  = 5,
-							height = "576px",
+							width  = 4,
+							height = "320px",
 							shinycssloaders::withSpinner(
 								type = 4,
 								highcharter::highchartOutput(
 									outputId = "calculationPlotMortality",
-									height = "500px"
+									height = "250px"
 								)
 							)
 						),
@@ -244,13 +250,13 @@ shiny::shinyUI(
 							title  = shiny::uiOutput(
 								outputId = "titleIcuRiskBox"
 							),
-							width  = 5,
-							height = "576px",
+							width  = 4,
+							height = "320px",
 							shinycssloaders::withSpinner(
 								type = 4,
 								highcharter::highchartOutput(
 									outputId = "calculationPlotIcu",
-									height   = "500px"
+									height   = "250px"
 								)
 							)
 						),
