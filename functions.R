@@ -318,14 +318,14 @@ plotCalibration <- function(
 			title = title,
 			xaxis = list(
 				title = paste(
-					"Predicted 21-day",
+					"Predicted 28-day",
 					outcome
 				),
 				range = c(-.01, .5)
 			),
 			yaxis = list(
 				title = paste(
-					"Observed 21-day",
+					"Observed 28-day",
 					outcome
 				),
 				range = c(-.01, .5)

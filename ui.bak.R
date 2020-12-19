@@ -21,7 +21,7 @@ shiny::shinyUI(
 							height = "50px",
 							width = "50px"
 						),
-						href = "https://www.publichealthrotterdam.com/"
+						href = "https://www.erasmusmc.nl"
 					)
 					# style = "padding-top:10px;padding-bottom:0px;padding-right:2px"
 				),
@@ -289,24 +289,25 @@ shiny::shinyUI(
 							shiny::helpText(
 								shiny::p(
 									"The probability of mortality within 28 days
-										 was estimated using a logistic regression
-										 model. The linear predictor of the model 
-										 is given by:
+								was estimated using a Cox proportional hazards
+								model. The natural logarithm of the hazard ratio
+								is given by:
 								$$
-								\\begin{align}
-                                \\ LP_{mort} = &-13.6 \\\\
-                                \\ & + 0.046\\times Age + 1.654\\times log(RR) \\\\
-                                \\ & + 0.169\\times log(CRP) + 1.197\\times log(LDH) \\\\
-                                \\ & - 1.585\\times log(Albumin) + 0.595\\times log(Urea)
-                                \\end{align}
-                                $$
-								Then the probability of death in 28 days is given
-									from:
-									$$
-									Pr(Death) = \\frac{1}{1+exp(-LP_{mort})}
-									$$
-									"
-									
+								\\log(HR_m) &=0.052\\times Age + \\\\
+								1.529\\times\\log(RR) +
+								0.2829\\times\\log(CRP) +
+								1.041\\times\\log(LDH) - 
+								14.94
+								$$
+								Then the probability of death within 28 days is:
+								$$
+								\\Pr(Death) = 1 - \\exp\\bigg(-0.06322\\times\\exp\\Big(\\log(HR_m)\\Big)\\bigg),
+								$$
+								where log is the natural logarithm, exp is the 
+								natural exponent, RR (r/min) is the respiratory
+								rate, CRP is the C-reactive protein level (mg/L)
+								and LDH is the Lactate dehydrogenase level (U/L).
+								The age of the patients is measured in years."
 								)
 							)
 						),
@@ -325,16 +326,17 @@ shiny::shinyUI(
 									"The probability of admission to the ICU 
 									within 28 days was estimated using a 
 									re-calibrated version of the model for
-									28-day mortality. More specifically, the linear
-									predictor of the model for
+									21-day mortality. More specifically, the 
+									natural logarithm of the hazard ratio for
 									ICU admission is given from:
 									$$
-									LP_{ICU} = -0.089 + 0.597\\times LP_{mort}
+									\\log(HR_{ICU}) = 0.7684\\times\\log(HR_m) +
+									0.8952
 									$$
 									Then, the probability for 21-day ICU 
 									admission can be estimted from:
 									$$
-									Pr(ICU) = \\frac{1}{1+exp(-LP_{ICU})}
+									\\Pr(ICU) = 1 - \\exp\\bigg(-0.06079 \\times\\exp\\Big(\\log(HR_{ICU})\\Big)\\bigg)
 									$$
 									"
 								)
@@ -346,30 +348,56 @@ shiny::shinyUI(
 					tabName = "performance",
 					shiny::tabsetPanel(
 						shiny::tabPanel(
-							title = "Overall",
+							title = "Mortality",
 							shinydashboard::box(
-								title  = "Calibration plot for mortality",
+								title  = "Calibration plot for: Hospital 1",
 								status = "primary",
-								width  = 6,
-								height = "450px",
+								width  = 3,
+								height = "350px",
 								shinycssloaders::withSpinner(
 									type = 4,
 									plotly::plotlyOutput(
-										outputId = "calibrationMortalityOverall",
-										height = "380px"
+										outputId = "calibrationMortalityCenter1",
+										height = "280px"
 									)
 								)
 							),
 							shinydashboard::box(
-								title  = "Calibration plot for ICU admission",
+								title  = "Hospital 2",
 								status = "primary",
-								width  = 6,
-								height = "450px",
+								width  = 3,
+								height = "350px",
 								shinycssloaders::withSpinner(
 									type = 4,
 									plotly::plotlyOutput(
-										outputId = "calibrationIcuOverall",
-										height = "380px"
+										outputId = "calibrationMortalityCenter2",
+										height = "280px"
+									)
+								)
+							),
+							shinydashboard::box(
+								title  = "Hospital 3",
+								status = "primary",
+								width  = 3,
+								height = "350px",
+								shinycssloaders::withSpinner(
+									type = 4,
+									plotly::plotlyOutput(
+										outputId = "calibrationMortalityCenter3",
+										height = "280px"
+									)
+								)
+							),
+							shinydashboard::box(
+								title  = "Hospital 4",
+								status = "primary",
+								width  = 3,
+								height = "350px",
+								shinycssloaders::withSpinner(
+									type = 4,
+									plotly::plotlyOutput(
+										outputId = "calibrationMortalityCenter4",
+										height = "280px"
 									)
 								)
 							),
@@ -384,106 +412,44 @@ shiny::shinyUI(
 							)
 						),
 						shiny::tabPanel(
-							title = "By hospital",
-							shiny::tabsetPanel(
-								id = "byHospital",
-								type = "pills",
-								shiny::tabPanel(
-									title = "Mortality",
-									shinydashboard::box(
-										title  = "Calibration plot for: Hospital 1",
-										status = "primary",
-										width  = 3,
-										height = "350px",
-										shinycssloaders::withSpinner(
-											type = 4,
-											plotly::plotlyOutput(
-												outputId = "calibrationMortalityCenter1",
-												height = "280px"
-											)
-										)
-									),
-									shinydashboard::box(
-										title  = "Hospital 2",
-										status = "primary",
-										width  = 3,
-										height = "350px",
-										shinycssloaders::withSpinner(
-											type = 4,
-											plotly::plotlyOutput(
-												outputId = "calibrationMortalityCenter2",
-												height = "280px"
-											)
-										)
-									),
-									shinydashboard::box(
-										title  = "Hospital 3",
-										status = "primary",
-										width  = 3,
-										height = "350px",
-										shinycssloaders::withSpinner(
-											type = 4,
-											plotly::plotlyOutput(
-												outputId = "calibrationMortalityCenter3",
-												height = "280px"
-											)
-										)
-									),
-									shinydashboard::box(
-										title  = "Hospital 4",
-										status = "primary",
-										width  = 3,
-										height = "350px",
-										shinycssloaders::withSpinner(
-											type = 4,
-											plotly::plotlyOutput(
-												outputId = "calibrationMortalityCenter4",
-												height = "280px"
-											)
-										)
+							title = "ICU",
+							shinydashboard::box(
+								title  = "Calibration plot for: Hospital 1",
+								status = "primary",
+								width  = 3,
+								height = "350px",
+								shinycssloaders::withSpinner(
+									type = 4,
+									plotly::plotlyOutput(
+										outputId = "calibrationIcuHospital1",
+										height = "280px"
 									)
-								),
-								shiny::tabPanel(
-									title = "ICU",
-									shinydashboard::box(
-										title  = "Calibration plot for: Hospital 1",
-										status = "primary",
-										width  = 3,
-										height = "350px",
-										shinycssloaders::withSpinner(
-											type = 4,
-											plotly::plotlyOutput(
-												outputId = "calibrationIcuHospital1",
-												height = "280px"
-											)
-										)
-									),
-									shinydashboard::box(
-										title  = "Hospital 2",
-										status = "primary",
-										width  = 3,
-										height = "350px"
-									),
-									shinydashboard::box(
-										title  = "Hospital 3",
-										status = "primary",
-										width  = 3,
-										height = "350px",
-										shinycssloaders::withSpinner(
-											type = 4,
-											plotly::plotlyOutput(
-												outputId = "calibrationIcuHospital3",
-												height = "280px"
-											)
-										)
-									),
-									shinydashboard::box(
-										title  = "Hospital 4",
-										status = "primary",
-										width  = 3,
-										height = "350px"
-									),
 								)
+							),
+							shinydashboard::box(
+								title  = "Hospital 2",
+								status = "primary",
+								width  = 3,
+								height = "350px"
+							),
+							shinydashboard::box(
+								title  = "Hospital 3",
+								status = "primary",
+								width  = 3,
+								height = "350px",
+								shinycssloaders::withSpinner(
+									type = 4,
+									plotly::plotlyOutput(
+										outputId = "calibrationIcuHospital3",
+										height = "280px"
+									)
+								)
+							),
+							shinydashboard::box(
+								title  = "Hospital 4",
+								status = "primary",
+								width  = 3,
+								height = "350px"
 							),
 							shinydashboard::box(
 								title  = "Evaluation metrics",

@@ -310,6 +310,33 @@ shiny::shinyServer(
 			}
 		)
 
+		output$calibrationMortalityOverall <- plotly::renderPlotly(
+			{
+				plotCalibration(
+					calibrationData = calibration$mortality[[5]],
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					outcome         = "mortality",
+					a               = calibrationIntercept$mortality[5],
+					b               = calibrationSlope$mortality[5],
+					c               = auc$mortality[5]
+				)
+			}
+		)
+		
+		output$calibrationIcuOverall <- plotly::renderPlotly(
+			{
+				plotCalibration(
+					calibrationData = calibration$icu[[3]],
+					fifths          = fifths$mortality,
+					colorMap        = colorMap,
+					outcome         = "mortality",
+					a               = calibrationIntercept$icu[3],
+					b               = calibrationSlope$icu[3],
+					c               = auc$icu[3]
+				)
+			}
+		)
 		
 		output$calibrationMortalityCenter1 <- plotly::renderPlotly(
 			{
