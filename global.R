@@ -62,25 +62,6 @@ colorMap <- data.frame(
 )
 
 
-# table1Long <- readRDS(
-#   "Data/table1.rds"
-# ) %>%
-# 	dplyr::mutate(
-# 		status = factor(
-# 			.$status,
-# 			levels = c(
-# 				"Overall",
-# 				"Dead",
-# 				"Discharged",
-# 				"In hospital"
-# 			)
-# 		)
-# 	) %>%
-# 	dplyr::arrange(
-# 		.$status,
-# 		.$variable
-# 	)
-
 develTab1Long <- readRDS(
   "Data/developTable1.rds"
 ) %>%
