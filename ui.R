@@ -21,7 +21,7 @@ shiny::shinyUI(
 							height = "50px",
 							width = "50px"
 						),
-						href = "https://google.com"
+						href = "https://www.erasmusmc.nl"
 					)
 					# style = "padding-top:10px;padding-bottom:0px;padding-right:2px"
 				),
@@ -110,27 +110,6 @@ shiny::shinyUI(
 								title   = "<b>Respiratory rate</b>",
 								content = shiny::includeHTML(
 									path = "html/calculation_respiratoryRate.html"
-								),
-								placement = "bottom",
-								options   = list(
-									container = "body"
-								)
-							),
-							shinyBS::popify(
-								shiny::numericInput(
-									inputId = "saturation",
-									label   = shiny::div(
-										shiny::HTML(
-											"<b>Oxygen saturation</b> <em>(%)</em>"
-										)
-									),
-									value   = 98,
-									min     = 0,
-									max     = 100
-								),
-								title   = "<b>Oxygen saturation</b>",
-								content = shiny::includeHTML(
-									path = "html/calculation_saturation.html"
 								),
 								placement = "bottom",
 								options   = list(
@@ -283,8 +262,20 @@ shiny::shinyUI(
 				),
 				shinydashboard::tabItem(
 					tabName = "population",
-					DT::dataTableOutput(
-						outputId = "table1"
+					shiny::tabsetPanel(
+						id = "tab1",
+						shiny::tabPanel(
+							title = "Development",
+							DT::dataTableOutput(
+								outputId = "developmentTable1"
+							)
+						),
+						shiny::tabPanel(
+							title = "Validation",
+							DT::dataTableOutput(
+								outputId = "validationTable1"
+							)
+						)
 					)
 				),
 				shinydashboard::tabItem(

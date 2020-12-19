@@ -10,7 +10,6 @@ shiny::shinyServer(
 				data.frame(
 					age             = input$age,
 					respiratoryRate = input$respiratoryRate,
-					saturation      = input$saturation,
 					crp             = input$crp,
 					ldh             = input$ldh,
 					albumin         = input$albumin,
@@ -25,10 +24,14 @@ shiny::shinyServer(
 					is.numeric(input$respiratoryRate) &&
 					is.numeric(input$ldh) &&
 					is.numeric(input$crp) &&
+					is.numeric(input$albumin) &&
+					is.numeric(input$urea) &&
 					data.table::between(input$age, 0, 100) &&
 					data.table::between(input$respiratoryRate, 10, 60) &&
 					data.table::between(input$ldh, 100, 1000) &&
-					data.table::between(input$crp, 1, 400)
+					data.table::between(input$crp, 1, 400) &&
+					data.table::between(input$albumin, 10, 60) &&
+					data.table::between(input$urea, 1, 80)
 			}
 		)
 		
@@ -233,10 +236,47 @@ shiny::shinyServer(
 			}
 		)
 
-		output$table1 <- DT::renderDataTable(
+		output$developmentTable1 <- DT::renderDataTable(
 			{
 				table <- DT::datatable(
-					data     = table1Long,
+					data     = develTab1Long,
+					colnames = c(
+						"Status at 28 days",
+						"Variable",
+						"Mean",
+						"SD",
+						"Median",
+						"Min",
+						"Max",
+						"Missing",
+						"%"
+					),
+					caption = htmltools::tags$caption(
+						style = 'font-size:16px;',
+						"Table: Key patient characteristics of the development
+						dataset at the moment of prediction. For all patients (N=5831), 
+						the results are displayed first. By hitting \"Next\", you 
+						can view the characteristics of 3 sub-populations of interest: ",
+						htmltools::em("Dead"),
+						"at 28 days (N=629),",
+						htmltools::em("Discharged"),
+						"(N=5070) at 28 days and ",
+						htmltools::em("In hospital"),
+						"(N=132) at 28 days."
+					),
+					options = list(
+						pageLength = 22
+					)
+				)
+
+				return(table)
+			}
+		)
+
+		output$validationTable1 <- DT::renderDataTable(
+			{
+				table <- DT::datatable(
+					data     = validationTab1Long,
 					colnames = c(
 						"Status at 21 days",
 						"Variable",
@@ -250,26 +290,25 @@ shiny::shinyServer(
 					),
 					caption = htmltools::tags$caption(
 						style = 'font-size:16px;',
-						"Table 1: Key patient characteristics at the moment
-					of prediction. For all patients (N=4612), the results are displayed
-					first. By hitting \"Next\", you can view the characteristics of
-					3 sub-populations of interest: ",
+						"Table 1: Key patient characteristics of the validation 
+						dataset at the moment of prediction. For all patients (N=3252), 
+						the results are displayed first. By hitting \"Next\", you 
+						can view the characteristics of	3 sub-populations of interest: ",
 						htmltools::em("Dead"),
-						"at 21 days (N=495),",
+						"at 28 days (N=326),",
 						htmltools::em("Discharged"),
-						"(N=3632) at 21 days and ",
+						"(N=2854) at 28 days and ",
 						htmltools::em("In hospital"),
-						"(N=485) at 21 days."
+						"(N=72) at 28 days."
 					),
 					options = list(
-						pageLength = 13
+						pageLength = 22
 					)
 				)
 
 				return(table)
 			}
 		)
-
 
 		
 		output$calibrationMortalityCenter1 <- plotly::renderPlotly(

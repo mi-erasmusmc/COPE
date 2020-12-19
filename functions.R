@@ -12,16 +12,6 @@ createLinearPredictor <- function(
 	return(linearPredictor)
 }
 
-# survivalProbability <- function(
-# 	baselineHazard,
-# 	linearPredictor,
-# 	center
-# ) {
-# 	
-# 	res <- 1 - exp(-baselineHazard * exp(linearPredictor - center))
-# 	return(round(100 * res, 1))
-# 	
-# }
 
 logisticProbability <- function(
 	linearPredictor
