@@ -1,5 +1,5 @@
 shiny::shinyUI(
-	shinydashboard::dashboardPage(
+	shinydashboardPlus::dashboardPagePlus(
 		skin      = "black",
 		title     = "COPE",
 		shinydashboard::dashboardHeader(
@@ -59,6 +59,7 @@ shiny::shinyUI(
 			)
 		),
 		shinydashboard::dashboardBody(
+			shinyWidgets::setShadow(class = "box"),
 			shinyalert::useShinyalert(),
 			shinydashboard::tabItems(
 				shinydashboard::tabItem(
