@@ -8,11 +8,12 @@ shiny::shinyServer(
 		currentInputData <- shiny::reactive(
 			{
 				data.frame(
-					time            = 4,
 					age             = input$age,
 					respiratoryRate = input$respiratoryRate,
 					crp             = input$crp,
-					ldh             = input$ldh
+					ldh             = input$ldh,
+					albumin         = input$albumin,
+					urea            = input$urea
 				)
 			}
 		)
@@ -23,21 +24,16 @@ shiny::shinyServer(
 					is.numeric(input$respiratoryRate) &&
 					is.numeric(input$ldh) &&
 					is.numeric(input$crp) &&
+					is.numeric(input$albumin) &&
+					is.numeric(input$urea) &&
 					data.table::between(input$age, 0, 100) &&
-					data.table::between(input$respiratoryRate, 10, 40) &&
+					data.table::between(input$respiratoryRate, 10, 60) &&
 					data.table::between(input$ldh, 100, 1000) &&
-					data.table::between(input$crp, 1, 400)
+					data.table::between(input$crp, 1, 400) &&
+					data.table::between(input$albumin, 10, 60) &&
+					data.table::between(input$urea, 1, 80)
 			}
 		)
-		
-		# output$admissible <- shiny::reactive(
-		# 	{
-		# 		as.logical(admissibleInput())
-		# 	}
-		# )
-
-
-		# outputOptions(output, "admissible", suspendWhenHidden = FALSE, priority = 0)
 		
 		shiny::observeEvent(
 			input$calculatePredictionButton,
@@ -64,7 +60,8 @@ shiny::shinyServer(
 				
 				createLinearPredictor(
 					modelMatrix = modelMatrix,
-					beta        = betaCoefficients$mortality
+					beta        = betaCoefficients$mortality,
+					intercept   = intercepts$mortality
 				)
 			}
 		)
@@ -72,18 +69,15 @@ shiny::shinyServer(
 		currentPrediction <- shiny::eventReactive(
 			input$calculatePredictionButton,
 			{
-				mortalityRisk <- survivalProbability(
-					baselineHazard  = baselineHazard$mortality,
-					linearPredictor = mortalityLinearPredictor(),
-					center          = 13.13958
+				mortalityRisk <- logisticProbability(
+					linearPredictor = mortalityLinearPredictor()
 				)
 				
-				icuLinearPredictor <- betaCoefficients$icu * (mortalityLinearPredictor() - 13.13958)
+				icuLinearPredictor <- betaCoefficients$icu * (mortalityLinearPredictor()) +
+					intercepts$icu
 				
-				icuRisk <- survivalProbability(
-					baselineHazard  = baselineHazard$icu,
-					linearPredictor = icuLinearPredictor,
-					center          = -.8952993 
+				icuRisk <- logisticProbability(
+					linearPredictor = icuLinearPredictor
 				)
 				
 				prediction <- list(
@@ -135,63 +129,80 @@ shiny::shinyServer(
 			}
 		)
 		
-		output$calculationPlotMortality <- plotly::renderPlotly(
+		output$calculationPlotMortality <- highcharter::renderHighchart(
 			{
-				shiny::req(
-					admissibleInput()
-				)
+				shiny::req(admissibleInput())
 				
 				prediction <- currentPrediction()
+				cols       <- c(rev(colorMap$color), "#3B6AA0")
+				riskFifth  <- riskFifthMortality()
 				
-				rangeMax <- ifelse(
-					test = prediction$icu > 30 || prediction$mortality > 30, 
-					yes  = 60,
-					no   = 35
-				)
-				
-				predictionData <- data.frame(
-					x = 1,
-					y = prediction$mortality
-				)
+				maxRisk   <- max(prediction$mortality, prediction$icu)
+				test      <- c( 5, 10, 20, 30, 50, 100)
+				threshold <- c(10, 20, 30, 40, 60, 100)
+				rangeMax  <- min(threshold[maxRisk < test])
 				
 				plotRiskPrediction(
-					predictionData = predictionData,
-					fifths         = fifths$mortality,
-					riskFifth      = riskFifthMortality(),
-					colorMap       = colorMap,
-					rangeMax       = rangeMax
+					prediction       = prediction$mortality,
+					colorMap         = colorMap,
+					currentRiskFifth = riskFifth,
+					riskFifths       = fifths$mortality,
+					rangeMax         = rangeMax
 				)
 				
 			}
 		)
 		
-		output$calculationPlotIcu <- plotly::renderPlotly(
+		output$titleMortalityRiskBox <- shiny::renderPrint(
+			{
+				shiny::req(admissibleInput())
+				shiny::HTML(
+					cat(
+						"<p>Death within 28 days: <b>",
+						currentPrediction()$mortality,
+						"%</b>"
+					),
+					"</p>"
+				)
+			}
+		)
+		
+		output$titleIcuRiskBox <- shiny::renderPrint(
+			{
+				shiny::req(admissibleInput())
+				shiny::HTML(
+					cat(
+						"<p>ICU admission within 28 days: <b>",
+						currentPrediction()$icu,
+						"%</b>"
+					),
+					"</p>"
+				)
+			}
+		)
+		
+		output$calculationPlotIcu <- highcharter::renderHighchart(
 			{
 				shiny::req(
 					admissibleInput()
 				)
 				
 				prediction <- currentPrediction()
+				cols <- c(rev(colorMap$color), "#3B6AA0")
+				riskFifth <- riskFifthIcu()
 				
-				rangeMax <- ifelse(
-					test = prediction$icu > 30 || prediction$mortality > 30,
-					yes  = 60,
-					no   = 35
-				)
-				
-				predictionData <- data.frame(
-					x = 1,
-					y = prediction$icu
-				)
+				maxRisk <- max(prediction$mortality, prediction$icu)
+				test      <- c( 5, 10, 20, 30, 50, 100)
+				threshold <- c(10, 20, 30, 40, 60, 100)
+				rangeMax  <- min(threshold[maxRisk < test])
 				
 				plotRiskPrediction(
-					predictionData = predictionData,
-					fifths         = fifths$icu,
-					riskFifth      = riskFifthIcu(),
-					colorMap       = colorMap,
-					rangeMax       = rangeMax
+					prediction = prediction$icu,
+					colorMap = colorMap,
+					currentRiskFifth = riskFifth,
+					riskFifths = fifths$icu,
+					rangeMax = rangeMax
 				)
-				
 			}
 		)
 		
@@ -225,10 +236,47 @@ shiny::shinyServer(
 			}
 		)
 
-		output$table1 <- DT::renderDataTable(
+		output$developmentTable1 <- DT::renderDataTable(
 			{
 				table <- DT::datatable(
-					data     = table1Long,
+					data     = develTab1Long,
+					colnames = c(
+						"Status at 28 days",
+						"Variable",
+						"Mean",
+						"SD",
+						"Median",
+						"Min",
+						"Max",
+						"Missing",
+						"%"
+					),
+					caption = htmltools::tags$caption(
+						style = 'font-size:16px;',
+						"Table: Key patient characteristics of the development
+						dataset at the moment of prediction. For all patients (N=5831), 
+						the results are displayed first. By hitting \"Next\", you 
+						can view the characteristics of 3 sub-populations of interest: ",
+						htmltools::em("Dead"),
+						"at 28 days (N=629),",
+						htmltools::em("Discharged"),
+						"(N=5070) at 28 days and ",
+						htmltools::em("In hospital"),
+						"(N=132) at 28 days."
+					),
+					options = list(
+						pageLength = 22
+					)
+				)
+
+				return(table)
+			}
+		)
+
+		output$validationTable1 <- DT::renderDataTable(
+			{
+				table <- DT::datatable(
+					data     = validationTab1Long,
 					colnames = c(
 						"Status at 21 days",
 						"Variable",
@@ -242,19 +290,19 @@ shiny::shinyServer(
 					),
 					caption = htmltools::tags$caption(
 						style = 'font-size:16px;',
-						"Table 1: Key patient characteristics at the moment
-					of prediction. For all patients (N=4612), the results are displayed
-					first. By hitting \"Next\", you can view the characteristics of
-					3 sub-populations of interest: ",
+						"Table 1: Key patient characteristics of the validation 
+						dataset at the moment of prediction. For all patients (N=3252), 
+						the results are displayed first. By hitting \"Next\", you 
+						can view the characteristics of	3 sub-populations of interest: ",
 						htmltools::em("Dead"),
-						"at 21 days (N=495),",
+						"at 28 days (N=326),",
 						htmltools::em("Discharged"),
-						"(N=3632) at 21 days and ",
+						"(N=2854) at 28 days and ",
 						htmltools::em("In hospital"),
-						"(N=485) at 21 days."
+						"(N=72) at 28 days."
 					),
 					options = list(
-						pageLength = 13
+						pageLength = 22
 					)
 				)
 
@@ -262,13 +310,55 @@ shiny::shinyServer(
 			}
 		)
 
-
+		output$calibrationMortalityOverall <- plotly::renderPlotly(
+			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 0
+				)
+				
+				plotCalibration(
+					calibrationData = calibration$mortality[[5]],
+					fifths          = quantiles,
+					colorMap        = colorMap,
+					outcome         = "mortality",
+					a               = calibrationIntercept$mortality[5],
+					b               = calibrationSlope$mortality[5],
+					c               = auc$mortality[5]
+				)
+			}
+		)
+		
+		output$calibrationIcuOverall <- plotly::renderPlotly(
+			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 1,
+					center               = 0
+				)
+				plotCalibration(
+					calibrationData = calibration$icu[[3]],
+					fifths          = quantiles,
+					colorMap        = colorMap,
+					outcome         = "ICU admisison",
+					a               = calibrationIntercept$icu[3],
+					b               = calibrationSlope$icu[3],
+					c               = auc$icu[3]
+				)
+			}
+		)
 		
 		output$calibrationMortalityCenter1 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 1
+				)
 				plotCalibration(
 					calibrationData = calibration$mortality[[1]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "mortality",
 					a               = calibrationIntercept$mortality[1],
@@ -279,9 +369,14 @@ shiny::shinyServer(
 		)
 		output$calibrationMortalityCenter2 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 2
+				)
 				plotCalibration(
 					calibrationData = calibration$mortality[[2]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "mortality",
 					a               = calibrationIntercept$mortality[2],
@@ -292,9 +387,14 @@ shiny::shinyServer(
 		)
 		output$calibrationMortalityCenter3 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 3
+				)
 				plotCalibration(
 					calibrationData = calibration$mortality[[3]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "mortality",
 					a               = calibrationIntercept$mortality[3],
@@ -305,9 +405,14 @@ shiny::shinyServer(
 		)
 		output$calibrationMortalityCenter4 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 4
+				)
 				plotCalibration(
 					calibrationData = calibration$mortality[[4]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "mortality",
 					a               = calibrationIntercept$mortality[4],
@@ -319,9 +424,14 @@ shiny::shinyServer(
 		
 		output$calibrationIcuHospital1 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 1,
+					center               = 1
+				)
 				plotCalibration(
 					calibrationData = calibration$icu[[1]],
-					fifths          = fifths$icu,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "ICU admission",
 					a               = calibrationIntercept$icu[1],
@@ -333,9 +443,14 @@ shiny::shinyServer(
 		
 		output$calibrationIcuHospital3 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 1,
+					center               = 3
+				)
 				plotCalibration(
 					calibrationData = calibration$icu[[2]],
-					fifths          = fifths$icu,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "ICU admission",
 					a               = calibrationIntercept$icu[2],

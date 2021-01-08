@@ -2,6 +2,7 @@ library(dplyr)
 library(shinyBS)
 library(shinyalert)
 library(data.table)
+library(highcharter)
 
 source("functions.R")
 
@@ -10,24 +11,29 @@ betaCoefficients <- readRDS(
 	"Data/betaCoefficients.rds"
 )
 
-baselineHazard <- list(
-	mortality = 0.0632205,
-	icu       = 0.06078579
+
+intercepts <- list(
+	mortality = -13.6,
+	icu       = -.08949
 )
 
 fifths <- list(
 	mortality = c(
-		.020562059 * 100,
-		.047966477 * 100,
-		.090997030 * 100,
-		.182960687 * 100
+		.01300704 * 100,
+		.03418947 * 100,
+		.06762459 * 100,
+		.14041268 * 100
 	),
 	icu = c(
-		.06322953 * 100,
-		.11972550 * 100,
-		.19091041 * 100,
-		.31256813 * 100
+		.06701038 * 100,
+		.11692562 * 100,
+		.16903291 * 100,
+		.24799012 * 100
 	)
+)
+
+calibrationQuantiles <- readRDS(
+	"Data/calibrationQuantiles.rds"
 )
 
 calibration <- readRDS(
@@ -47,7 +53,7 @@ calibrationSlope <- readRDS(
 )
 
 
-# ----- Color grid behind plotly output -----
+# ----- Color grid behind graph output -----
 colorMap <- data.frame(
 	fifth = 1:5,
 	color = c(
@@ -60,8 +66,27 @@ colorMap <- data.frame(
 )
 
 
-table1Long <- readRDS(
-  "Data/table1.rds"
+develTab1Long <- readRDS(
+  "Data/developTable1.rds"
+) %>%
+	dplyr::mutate(
+		status = factor(
+			.$status,
+			levels = c(
+				"Overall",
+				"Dead",
+				"Discharged",
+				"In hospital"
+			)
+		)
+	) %>%
+	dplyr::arrange(
+		.$status,
+		.$variable
+	)
+
+validationTab1Long <- readRDS(
+  "Data/validateTable1.rds"
 ) %>%
 	dplyr::mutate(
 		status = factor(
@@ -81,15 +106,15 @@ table1Long <- readRDS(
 
 
 transformationsMortality <- list(
-	time            = identity,
 	age             = identity,
 	respiratoryRate = log,
 	crp             = log,
-	ldh             = log
+	ldh             = log,
+	albumin         = log,
+	urea            = log
 )
 
 transformationsIcu <- list(
-	lp  = identity,
-	age = identity
+	lp  = identity
 )
 
