@@ -332,8 +332,8 @@ shiny::shinyUI(
 									$$
 									LP_{ICU} = -0.089 + 0.597\\times LP_{mort}
 									$$
-									Then, the probability for 21-day ICU 
-									admission can be estimted from:
+									Then, the probability for 28-day ICU 
+									admission can be estimated from:
 									$$
 									Pr(ICU) = \\frac{1}{1+exp(-LP_{ICU})}
 									$$

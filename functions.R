@@ -333,3 +333,20 @@ plotCalibration <- function(
 			showlegend = FALSE
 		)
 }
+
+
+extractQuantiles <- function(
+	calibrationQuantiles,
+	outcome,
+	center
+) {
+	calibrationQuantiles %>%
+		dplyr::filter(
+			!!outcome == outcome,
+			!!center == center
+		) %>%
+		dplyr::select(
+			quant20, quant40, quant60, quant80
+		) %>%
+		unlist()
+}

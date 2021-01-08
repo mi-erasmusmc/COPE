@@ -312,9 +312,15 @@ shiny::shinyServer(
 
 		output$calibrationMortalityOverall <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 0
+				)
+				
 				plotCalibration(
 					calibrationData = calibration$mortality[[5]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "mortality",
 					a               = calibrationIntercept$mortality[5],
@@ -326,11 +332,16 @@ shiny::shinyServer(
 		
 		output$calibrationIcuOverall <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 1,
+					center               = 0
+				)
 				plotCalibration(
 					calibrationData = calibration$icu[[3]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
-					outcome         = "mortality",
+					outcome         = "ICU admisison",
 					a               = calibrationIntercept$icu[3],
 					b               = calibrationSlope$icu[3],
 					c               = auc$icu[3]
@@ -340,9 +351,14 @@ shiny::shinyServer(
 		
 		output$calibrationMortalityCenter1 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 1
+				)
 				plotCalibration(
 					calibrationData = calibration$mortality[[1]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "mortality",
 					a               = calibrationIntercept$mortality[1],
@@ -353,9 +369,14 @@ shiny::shinyServer(
 		)
 		output$calibrationMortalityCenter2 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 2
+				)
 				plotCalibration(
 					calibrationData = calibration$mortality[[2]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "mortality",
 					a               = calibrationIntercept$mortality[2],
@@ -366,9 +387,14 @@ shiny::shinyServer(
 		)
 		output$calibrationMortalityCenter3 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 3
+				)
 				plotCalibration(
 					calibrationData = calibration$mortality[[3]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "mortality",
 					a               = calibrationIntercept$mortality[3],
@@ -379,9 +405,14 @@ shiny::shinyServer(
 		)
 		output$calibrationMortalityCenter4 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 0,
+					center               = 4
+				)
 				plotCalibration(
 					calibrationData = calibration$mortality[[4]],
-					fifths          = fifths$mortality,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "mortality",
 					a               = calibrationIntercept$mortality[4],
@@ -393,9 +424,14 @@ shiny::shinyServer(
 		
 		output$calibrationIcuHospital1 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 1,
+					center               = 1
+				)
 				plotCalibration(
 					calibrationData = calibration$icu[[1]],
-					fifths          = fifths$icu,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "ICU admission",
 					a               = calibrationIntercept$icu[1],
@@ -407,9 +443,14 @@ shiny::shinyServer(
 		
 		output$calibrationIcuHospital3 <- plotly::renderPlotly(
 			{
+				quantiles <- extractQuantiles(
+					calibrationQuantiles = calibrationQuantiles,
+					outcome              = 1,
+					center               = 3
+				)
 				plotCalibration(
 					calibrationData = calibration$icu[[2]],
-					fifths          = fifths$icu,
+					fifths          = quantiles,
 					colorMap        = colorMap,
 					outcome         = "ICU admission",
 					a               = calibrationIntercept$icu[2],
