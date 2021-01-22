@@ -236,38 +236,38 @@ shiny::shinyServer(
 			}
 		)
 
-		output$developmentTable1 <- DT::renderDataTable(
-			{
+		output$developmentTable1 <- DT::renderDataTable( {
 				table <- DT::datatable(
 					data     = develTab1Long,
 					colnames = c(
 						"Status at 28 days",
 						"Variable",
+						"N",
+						"Missing",
+						"%",
 						"Mean",
 						"SD",
-						"Median",
 						"Min",
-						"Max",
-						"Missing",
-						"%"
+						"1st quartile",
+						"Median",
+						"3rd quartile",
+						"Max"
 					),
 					caption = htmltools::tags$caption(
 						style = 'font-size:16px;',
-						"Table: Key patient characteristics of the development
-						dataset at the moment of prediction. For all patients (N=5831), 
-						the results are displayed first. By hitting \"Next\", you 
-						can view the characteristics of 3 sub-populations of interest: ",
-						htmltools::em("Dead"),
-						"at 28 days (N=629),",
-						htmltools::em("Discharged"),
-						"(N=5070) at 28 days and ",
-						htmltools::em("In hospital"),
-						"(N=132) at 28 days."
+						"Table: Baseline characteristics of development patient cohort.
+						Status, \"Overall\", \"Discharged\",\"In hospital\" and 
+						\"Dead\" is measured at 28 days after hospital admission"
 					),
 					options = list(
-						pageLength = 22
+						pageLength   = 22,
+						lengthChange = FALSE
 					)
-				)
+				) %>%
+					DT::formatRound(
+						columns = 5:12,
+						digits  = 2
+					)
 
 				return(table)
 			}
@@ -278,34 +278,35 @@ shiny::shinyServer(
 				table <- DT::datatable(
 					data     = validationTab1Long,
 					colnames = c(
-						"Status at 21 days",
+						"Status at 28 days",
 						"Variable",
+						"N",
+						"Missing",
+						"%",
 						"Mean",
 						"SD",
-						"Median",
 						"Min",
-						"Max",
-						"Missing",
-						"%"
+						"1st quartile",
+						"Median",
+						"3rd quartile",
+						"Max"
 					),
 					caption = htmltools::tags$caption(
 						style = 'font-size:16px;',
-						"Table 1: Key patient characteristics of the validation 
-						dataset at the moment of prediction. For all patients (N=3252), 
-						the results are displayed first. By hitting \"Next\", you 
-						can view the characteristics of	3 sub-populations of interest: ",
-						htmltools::em("Dead"),
-						"at 28 days (N=326),",
-						htmltools::em("Discharged"),
-						"(N=2854) at 28 days and ",
-						htmltools::em("In hospital"),
-						"(N=72) at 28 days."
+						"Table: Baseline characteristics of validation patient cohort.
+						Status, \"Overall\", \"Discharged\",\"In hospital\" and 
+						\"Dead\" is measured at 28 days after hospital admission"
 					),
 					options = list(
-						pageLength = 22
+						pageLength   = 22,
+						lengthChange = FALSE
 					)
-				)
-
+				) %>%
+					DT::formatRound(
+						columns = 5:12,
+						digits = 2
+					)
+				
 				return(table)
 			}
 		)
