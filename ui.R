@@ -83,7 +83,7 @@ shiny::shinyUI(
 											"Age <em>(years)</em>"
 										)
 									),
-									value   = 75,
+									value   = 70,
 									min     = 0,
 									max     = 100
 								),
@@ -104,7 +104,7 @@ shiny::shinyUI(
 											"<b>Respiratory rate</b> <em>(per min)</em>"
 										)
 									),
-									value   = 17,
+									value   = 19,
 									min     = 10,
 									max     = 60
 								),
@@ -125,7 +125,7 @@ shiny::shinyUI(
 											"LDH <em>(U per L)</em>"
 										)
 									),
-									value   = 727,
+									value   = 244,
 									min     = 100,
 									max     = 1000
 								),
@@ -149,7 +149,7 @@ shiny::shinyUI(
 											"CRP <em>(mg per L)</em>"
 										)
 									),
-									value   = 30,
+									value   = 48,
 									min     = 1,
 									max     = 400
 								),
@@ -170,7 +170,7 @@ shiny::shinyUI(
 											"Serum albumin <em>(g per L)</em>"
 										)
 									),
-									value   = 26,
+									value   = 39,
 									min     = 10,
 									max     = 60
 								),
@@ -191,7 +191,7 @@ shiny::shinyUI(
 											"Serum urea <em>(mmol per L)</em>"
 										)
 									),
-									value   = 1.7,
+									value   = 6.5,
 									min     = 1,
 									max     = 80
 								),
@@ -338,6 +338,14 @@ shiny::shinyUI(
 									Pr(ICU) = \\frac{1}{1+exp(-LP_{ICU})}
 									$$
 									"
+								),
+								shiny::hr(),
+								shiny::em(
+									"Note: here",
+									shiny::strong("log"),
+									"is the natural logarithm and",
+									shiny::strong("exp"),
+									"is the natural exponential"
 								)
 							)
 						)
