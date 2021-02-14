@@ -236,6 +236,19 @@ plotCalibration <- function(
 				array      = calibrationData$upper - calibrationData$observed,
 				arrayminus = calibrationData$observed - calibrationData$lower,
 				color      = "blue"
+			),
+			hoverinfo = "text",
+			hovertext = paste(
+				"<b>Predicted:</b>",
+				paste0(
+					round(calibrationData$predicted, 2),
+					"%"
+				),
+				"<br><b>Observed:</b>",
+				paste0(
+					round(calibrationData$observed, 2),
+					"%"
+				)
 			)
 		) %>%
 		plotly::layout(
