@@ -2,6 +2,7 @@ shiny::shinyUI(
 	shinydashboardPlus::dashboardPagePlus(
 		skin      = "black",
 		title     = "COPE",
+		sidebar_fullCollapse = TRUE,
 		shinydashboard::dashboardHeader(
 			title = "COPE",
 			tags$li(
