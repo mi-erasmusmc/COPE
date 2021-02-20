@@ -41,7 +41,7 @@ shiny::shinyServer(
 				if (!admissibleInput()) {
 					shinyalert(
 						title = "Non-admissible input",
-						shiny::includeHTML("html/admissibleInput.html"),
+						shiny::includeHTML(here::here("html/admissibleInput.html")),
 						type = "error",
 						html = TRUE,
 						size = "m",
@@ -81,8 +81,8 @@ shiny::shinyServer(
 				)
 				
 				prediction <- list(
-					mortality = mortalityRisk,
-					icu       = icuRisk
+					mortality = as.vector(mortalityRisk),
+					icu       = as.vector(icuRisk)
 				)
 				
 				return(prediction)
@@ -222,80 +222,70 @@ shiny::shinyServer(
 				)
 				
 				paste(
-					shiny::includeHTML("html/calculation_result_explanation1.html"),
+					shiny::includeHTML(here::here("html/calculation_result_explanation1.html")),
 					shiny::HTML(paste0(prediction$mortality, "%.")),
-					shiny::includeHTML("html/calculation_result_explanation2.html"),
+					shiny::includeHTML(here::here("html/calculation_result_explanation2.html")),
 					shiny::HTML(riskLevelLabels[riskFifthMortality() - 1]),
-					shiny::includeHTML("html/calculation_result_explanation3.html"),
-					shiny::includeHTML("html/calculation_result_explanation4.html"),
+					shiny::includeHTML(here::here("html/calculation_result_explanation3.html")),
+					shiny::includeHTML(here::here("html/calculation_result_explanation4.html")),
 					shiny::HTML(paste0(prediction$icu, "%.")),
-					shiny::includeHTML("html/calculation_result_explanation2.html"),
+					shiny::includeHTML(here::here("html/calculation_result_explanation2.html")),
 					shiny::HTML(riskLevelLabels[riskFifthIcu() - 1]),
-					shiny::includeHTML("html/calculation_result_explanation6.html")
+					shiny::includeHTML(here::here("html/calculation_result_explanation6.html"))
 				)
 			}
 		)
-
+		
 		output$developmentTable1 <- DT::renderDataTable( {
-				table <- DT::datatable(
-					data     = develTab1Long,
-					colnames = c(
-						"Status at 28 days",
-						"Variable",
-						"N",
-						"Missing",
-						"%",
-						"Mean",
-						"SD",
-						"Min",
-						"1st quartile",
-						"Median",
-						"3rd quartile",
-						"Max"
-					),
-					caption = htmltools::tags$caption(
-						style = 'font-size:16px;',
-						"Table: Baseline characteristics of development patient cohort.
-						Status, \"Overall\", \"Discharged\",\"In hospital\" and 
-						\"Dead\" is measured at 28 days after hospital admission"
-					),
-					options = list(
-						pageLength   = 22,
-						lengthChange = FALSE
-					)
-				) %>%
-					DT::formatRound(
-						columns = 5:12,
-						digits  = 2
-					)
-
-				return(table)
-			}
-		)
-
+			table <- DT::datatable(
+				data     = develTab1Long,
+				colnames = c(
+					"Status at 28 days",
+					"Variable",
+					"N",
+					"Missing",
+					"%",
+					"Mean",
+					"SD",
+					"Min",
+					"1st quartile",
+					"Median",
+					"3rd quartile",
+					"Max"
+				),
+				caption = htmltools::tags$caption(
+					style = 'font-size:16px;',
+					"Table: Baseline characteristics of development patient cohort.
+				Status, \"Overall\", \"Discharged\",\"In hospital\" and
+				\"Dead\" is measured at 28 days after hospital admission"
+				),
+				options = list(
+					pageLength   = 22,
+					lengthChange = FALSE
+				)
+			) %>%
+				DT::formatRound(
+					columns = 5:12,
+					digits  = 2
+				)
+			
+			return(table)
+		} )
+		
 		output$validationTable1 <- DT::renderDataTable(
 			{
 				table <- DT::datatable(
 					data     = validationTab1Long,
 					colnames = c(
-						"Status at 28 days",
-						"Variable",
-						"N",
-						"Missing",
-						"%",
-						"Mean",
-						"SD",
-						"Min",
-						"1st quartile",
-						"Median",
-						"3rd quartile",
-						"Max"
+						"Status at 28 days", "Variable", "N",
+						"Missing", "%", "Mean", "SD", "Min",
+						"1st quartile", "Median", "3rd quartile", "Max"
 					),
 					caption = htmltools::tags$caption(
 						style = 'font-size:16px;',
 						"Table: Baseline characteristics of validation patient cohort.
-						Status, \"Overall\", \"Discharged\",\"In hospital\" and 
-						\"Dead\" is measured at 28 days after hospital admission"
+				Status, \"Overall\", \"Discharged\",\"In hospital\" and
+				\"Dead\" is measured at 28 days after hospital admission"
 					),
 					options = list(
 						pageLength   = 22,
@@ -310,7 +300,7 @@ shiny::shinyServer(
 				return(table)
 			}
 		)
-
+		
 		output$calibrationMortalityOverall <- plotly::renderPlotly(
 			{
 				quantiles <- extractQuantiles(
@@ -462,7 +452,7 @@ shiny::shinyServer(
 		)
 		
 		output$disclaimer <- shiny::renderText(
-			shiny::includeHTML("html/disclaimer.html")
+			shiny::includeHTML(here::here("html/disclaimer.html"))
 		)
 	}
 )

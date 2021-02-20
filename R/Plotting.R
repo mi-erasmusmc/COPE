@@ -1,35 +1,3 @@
-createLinearPredictor <- function(
-	modelMatrix,
-	beta,
-	intercept
-) {
-	beta <- matrix(
-		beta,
-		ncol = 1
-	)
-	
-	linearPredictor <- modelMatrix %*% beta + intercept
-	return(linearPredictor)
-}
-
-
-logisticProbability <- function(
-	linearPredictor
-) {
-	res <- 1 / (1 + exp(-linearPredictor))
-	return(round(100 * res, 1))
-}
-
-
-createModelMatrix <- function(
-	covariates,
-	transformations
-) {
-	res <- diag(sapply(transformations, mapply, covariates))
-	return(res)
-}
-
-
 # ----- Adds dotted lines for the prediction fifths in plotly -----
 hline <- function(y = 0, color = "black") {
 	list(
@@ -46,8 +14,6 @@ hline <- function(y = 0, color = "black") {
 		)
 	)
 }
-
-
 
 # ----- Adds a colored rectangle in plotly ------
 addRectangle <- function(
@@ -345,21 +311,4 @@ plotCalibration <- function(
 			),
 			showlegend = FALSE
 		)
-}
-
-
-extractQuantiles <- function(
-	calibrationQuantiles,
-	outcome,
-	center
-) {
-	calibrationQuantiles %>%
-		dplyr::filter(
-			!!outcome == outcome,
-			!!center == center
-		) %>%
-		dplyr::select(
-			quant20, quant40, quant60, quant80
-		) %>%
-		unlist()
 }

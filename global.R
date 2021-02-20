@@ -4,9 +4,6 @@ library(shinyalert)
 library(data.table)
 library(highcharter)
 
-source("functions.R")
-
-
 betaCoefficients <- readRDS(
 	"Data/betaCoefficients.rds"
 )
@@ -112,9 +109,5 @@ transformationsMortality <- list(
 	ldh             = log,
 	albumin         = log,
 	urea            = log
-)
-
-transformationsIcu <- list(
-	lp  = identity
 )
 
