@@ -3,7 +3,7 @@
 [![R build status](https://github.com/mi-erasmusmc/COPE/workflows/run-tests/badge.svg)](https://github.com/mi-erasmusmc/COPE/actions)
 <!-- badges: end -->
 
-![front image](https://github.com/mi-erasmusmc/COPE/tree/issue_9/extras/front.png)
+![front image](https://github.com/mi-erasmusmc/COPE/blob/issue_9/extras/front.png)
 
 ## Abstract
 
