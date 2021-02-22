@@ -1,3 +1,11 @@
+createModelMatrix <- function(
+	covariates,
+	transformations
+) {
+	res <- diag(sapply(transformations, mapply, covariates))
+	return(res)
+}
+
 createLinearPredictor <- function(
 	modelMatrix,
 	beta,
@@ -18,15 +26,6 @@ logisticProbability <- function(
 ) {
 	res <- 1 / (1 + exp(-linearPredictor))
 	return(round(100 * res, 1))
-}
-
-
-createModelMatrix <- function(
-	covariates,
-	transformations
-) {
-	res <- diag(sapply(transformations, mapply, covariates))
-	return(res)
 }
 
 

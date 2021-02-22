@@ -10,7 +10,7 @@ testthat::test_that(
 
 
 testthat::test_that(
-	"Creation of mortality model matrix works",
+	"Creation of model matrix works",
 	{
 		testthat::expect_equal(
 			createModelMatrix(
