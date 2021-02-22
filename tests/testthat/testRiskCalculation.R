@@ -41,16 +41,19 @@ shiny::testServer(
 			)
 		)
 		
+		# Is the predicted mortality risk assigned to the correct stratum of risk?
 		testthat::expect_equal(
 			riskFifthMortality(),
 			4
 		)
 		
+		# Is the predicted ICU risk assigned to the correct stratum of risk?
 		testthat::expect_equal(
 			riskFifthIcu(),
 			4
 		)
 		
+		# Is the output of the result explanation box correct?
 		testthat::expect_equal(
 			output$resultExplanationBox,
 			paste(
@@ -67,11 +70,15 @@ shiny::testServer(
 			)
 		)
 		
+		# Is the predicted mortality risk also presented at the top of the box 
+		# in the barplot?
 		testthat::expect_equal(
 			output$titleMortalityRiskBox,
 			"<p>Death within 28 days: <b> 4.8 %</b></p>"
 		)
 		
+		# Is the predicted ICU risk also presented at the top of the box in 
+		# the barplot?
 		testthat::expect_equal(
 			output$titleIcuRiskBox,
 			"<p>ICU admission within 28 days: <b> 13.3 %</b></p>"
