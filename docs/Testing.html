@@ -429,7 +429,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 😸</code></pre>
+<pre><code>## Test passed 🌈</code></pre>
 <p>Function <code>logisticProbability</code> calculates the logistic probability (%) based on a provided linear predictor value.</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Logistic probability calculation from linear predictor works&quot;,
@@ -440,7 +440,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🥳</code></pre>
+<pre><code>## Test passed 🥇</code></pre>
 <p>Finally, function <code>extractQuantiles</code> extracts the required quantiles for the calibration plot, based on the stored dataframe of <code>calibrationQuantiles</code>, the outcome of interest and the hospital under consideration.</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Extraction of calibration quantiles works&quot;,
@@ -465,11 +465,12 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🎉</code></pre>
+<pre><code>## Test passed 🥇</code></pre>
 </div>
 <div id="testing-server-functions" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Testing server functions</h1>
-<p>Here we perform a set of unit tests to ensure that server-side operations work the way they should.</p>
+<p>Here we perform a set of unit tests to ensure that server-side operations work the way they should. We start by looking at calculations tasks run within the server function.</p>
+<p>First, the <code>currentInputData</code> reactive dataframe should contain all the provided inputs.</p>
 <pre class="r"><code>shiny::testServer(
     expr = {
         session$setInputs(
@@ -482,7 +483,6 @@ summary {
             calculatePredictionButton = &quot;click&quot;
         )
         
-        # Is the reactive input dataframe correct?
         testthat::test_that(
             &quot;The reactive input dataframe is correct&quot;,
             {
@@ -500,9 +500,37 @@ summary {
             }
         )
         
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 19,
+            ldh                       = 2440,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;The reactive input dataframe is updated&quot;,
+            {
+                testthat::expect_equal(
+                    currentInputData(),
+                    data.frame(
+                        age             = 70,
+                        respiratoryRate = 19,
+                        crp             = 48,
+                        ldh             = 2440,
+                        albumin         = 39,
+                        urea            = 6.5
+                    )
+                )
+            }
+        )
+        
     }
 )</code></pre>
-<pre><code>## Test passed 😀</code></pre>
+<pre><code>## Test passed 🥇
+## Test passed 🎊</code></pre>
 </div>
 
 
