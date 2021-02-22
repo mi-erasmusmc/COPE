@@ -1,6 +1,7 @@
 library(shiny)
 library(testthat)
 
+# age below admissible input
 shiny::testServer(
 	expr = {
 		session$setInputs(
@@ -18,6 +19,7 @@ shiny::testServer(
 			FALSE
 		)
 		
+		# age above admissible input
 		session$setInputs(
 			age                       = 101,
 			respiratoryRate           = 19,
@@ -33,6 +35,7 @@ shiny::testServer(
 			FALSE
 		)
 		
+		# age as character input
 		session$setInputs(
 			age                       = "seventy",
 			respiratoryRate           = 19,
@@ -47,7 +50,7 @@ shiny::testServer(
 			admissibleInput(),
 			FALSE
 		)
-		
+		# respiratory rate below admissible input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 9,
@@ -63,6 +66,7 @@ shiny::testServer(
 			FALSE
 		)
 		
+		# respiratory rate above admissible input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 61,
@@ -72,12 +76,13 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# respiratory rate as character input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = "ten",
@@ -87,12 +92,12 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
-		
+		# ldh above admissible input	
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -102,12 +107,13 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# ldh below admissible input	
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -117,12 +123,12 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
-		
+		# ldh as character input	
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -132,12 +138,13 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# crp below admissible input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -147,27 +154,29 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# crp above admissible input	
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
 			ldh                       = 244,
-			crp                       = 401,
+			crp                       = 501,
 			albumin                   = 39,
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# crp as character input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -177,12 +186,13 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# albumin below admissible input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -192,12 +202,13 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# albumin above admissible input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -207,12 +218,13 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# albumin as character input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -222,12 +234,13 @@ shiny::testServer(
 			urea                      = 6.5,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# urea below admissible input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -237,12 +250,13 @@ shiny::testServer(
 			urea                      = 0,
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# urea above admissible input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -252,12 +266,13 @@ shiny::testServer(
 			urea                      = 81,
 			calculatePredictionButton = "click"
 		)
-
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
 		)
 		
+		# urea as character input
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
@@ -267,7 +282,7 @@ shiny::testServer(
 			urea                      = "four",
 			calculatePredictionButton = "click"
 		)
-	
+		
 		testthat::expect_equal(
 			admissibleInput(),
 			FALSE
@@ -276,4 +291,4 @@ shiny::testServer(
 )
 
 
-		
+
