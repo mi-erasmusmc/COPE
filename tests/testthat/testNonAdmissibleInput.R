@@ -101,7 +101,7 @@ shiny::testServer(
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
-			ldh                       = 1001,
+			ldh                       = 4001,
 			crp                       = 48,
 			albumin                   = 39,
 			urea                      = 6.5,
@@ -117,7 +117,7 @@ shiny::testServer(
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
-			ldh                       = 99,
+			ldh                       = 49,
 			crp                       = 48,
 			albumin                   = 39,
 			urea                      = 6.5,
@@ -132,7 +132,7 @@ shiny::testServer(
 		session$setInputs(
 			age                       = 70,
 			respiratoryRate           = 45,
-			ldh                       = "test",
+			ldh                       = "two hundred",
 			crp                       = 48,
 			albumin                   = 39,
 			urea                      = 6.5,
