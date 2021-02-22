@@ -3,6 +3,8 @@
 [![R build status](https://github.com/mi-erasmusmc/COPE/workflows/run-tests/badge.svg)](https://github.com/mi-erasmusmc/COPE/actions)
 <!-- badges: end -->
 
+![front image](https://github.com/mi-erasmusmc/COPE/tree/issue_9/extras/front.png)
+
 ## Abstract
 
 **Background and aim:** The COVID-19 pandemic is putting extraordinary pressure on emergency departments (EDs). Clinical prediction models have the potential to support decision making about hospital admission, but currently available models were recently assessed to contain a high risk of bias. We aimed to develop a simple and valid model for predicting mortality and need for ICU in patients who are suspected to have COVID-19 when presenting at the ED.
