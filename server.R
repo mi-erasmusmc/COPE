@@ -29,7 +29,7 @@ shiny::shinyServer(
 					data.table::between(input$age, 0, 100) &&
 					data.table::between(input$respiratoryRate, 10, 60) &&
 					data.table::between(input$ldh, 100, 1000) &&
-					data.table::between(input$crp, 1, 400) &&
+					data.table::between(input$crp, 1, 500) &&
 					data.table::between(input$albumin, 10, 60) &&
 					data.table::between(input$urea, 1, 80)
 			}
