@@ -14,16 +14,21 @@ shiny::testServer(
 		)
 		
 		# Is the reactive input dataframe correct?
-		testthat::expect_equal(
-			currentInputData(),
-			data.frame(
-				age             = 70,
-				respiratoryRate = 19,
-				crp             = 48,
-				ldh             = 244,
-				albumin         = 39,
-				urea            = 6.5
-			)
+		testthat::test_that(
+			"The reactive input dataframe is correct",
+			{
+				testthat::expect_equal(
+					currentInputData(),
+					data.frame(
+						age             = 70,
+						respiratoryRate = 19,
+						crp             = 48,
+						ldh             = 244,
+						albumin         = 39,
+						urea            = 6.5
+					)
+				)
+			}
 		)
 		
 		# Is the initial input admissible?
