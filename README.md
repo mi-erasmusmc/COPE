@@ -1,4 +1,7 @@
 # COVID Outcome Prediction in the Emergency Department
+<!-- badges: start -->
+[![R build status](https://github.com/mi-erasmusmc/COPE/workflows/run-tests/badge.svg)](https://github.com/mi-erasmusmc/COPE/actions)
+<!-- badges: end -->
 
 ## Abstract
 
