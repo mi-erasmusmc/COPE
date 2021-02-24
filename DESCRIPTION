@@ -25,7 +25,8 @@ Imports:
     shinyalert,
     shinyBS,
     shinycssloaders,
-    broom
+    broom,
+    pillar
 Suggests:
     testthat
 
