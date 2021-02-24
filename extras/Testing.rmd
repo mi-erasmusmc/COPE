@@ -106,7 +106,10 @@ testthat::test_that(
 
 Here we perform a set of unit tests to ensure that server-side operations work the way they should. We start by looking at calculations tasks run within the server function.
 
-First, the `currentInputData` reactive dataframe should contain all the provided inputs.
+## Interactivity
+Interactive values, are server-side variables that depend on the input and, therefore, need to be updated whenever the user alters their selection.
+
+First, the `currentInputData` reactive dataframe should contain all the provided inputs and should update accordingly, when these are changed.
 
 
 ```{r}
@@ -171,3 +174,67 @@ shiny::testServer(
 
 ```
 
+Next, we do the same for the variables that keep track of the current prediction and its placement, relevant to the overall predicted risk fifths, for both outcomes (mortality and ICU admission).The first set of tests evaluates if the initial input is handled appropriately and the second set evaluates if the values are updated correctly.
+
+```{r}
+shiny::testServer(
+	expr = {
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 19,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		# Is the prediction for the starting values correct?
+		testthat::test_that(
+			"Is the prediction for the starting values correct?",
+			testthat::expect_equal(
+				currentPrediction(),
+				list(
+					mortality = 4.8,
+					icu       = 13.3
+				)
+			)
+		)
+		
+		# Is the predicted mortality risk assigned to the correct stratum of risk?
+		testthat::expect_equal(
+			riskFifthMortality(),
+			4
+		)
+		
+		# Is the predicted ICU risk assigned to the correct stratum of risk?
+		testthat::expect_equal(
+			riskFifthIcu(),
+			4
+		)
+		
+		
+		session$setInputs(
+			age                       = 60,
+			respiratoryRate           = 30,
+			ldh                       = 400,
+			crp                       = 100,
+			albumin                   = 50,
+			urea                      = 10,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Current prediction is updated",
+			testthat::expect_equal(
+				currentPrediction(),
+				list(
+					mortality = 10.8,
+					icu       = 20.6
+				)
+			)
+		)
+	}
+)
+
+```

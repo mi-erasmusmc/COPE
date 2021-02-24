@@ -394,7 +394,10 @@ summary {
 <div id="TOC">
 <ul>
 <li><a href="#testing-supporting-functions"><span class="toc-section-number">1</span> Testing supporting functions</a></li>
-<li><a href="#testing-server-functions"><span class="toc-section-number">2</span> Testing server functions</a></li>
+<li><a href="#testing-server-functions"><span class="toc-section-number">2</span> Testing server functions</a>
+<ul>
+<li><a href="#interactivity"><span class="toc-section-number">2.1</span> Interactivity</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -414,7 +417,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🥇</code></pre>
+<pre><code>## Test passed 🎊</code></pre>
 <p>Function <code>createLinearPredictor</code> calculates the linear predictor of a prediction based on a provided model matrix, a vector of <span class="math inline">\(\beta\)</span> coefficients and an intercept</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Creation of linear predictor works&quot;,
@@ -429,7 +432,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🌈</code></pre>
+<pre><code>## Test passed 🎊</code></pre>
 <p>Function <code>logisticProbability</code> calculates the logistic probability (%) based on a provided linear predictor value.</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Logistic probability calculation from linear predictor works&quot;,
@@ -440,7 +443,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 😀</code></pre>
+<pre><code>## Test passed 🥇</code></pre>
 <p>Finally, function <code>extractQuantiles</code> extracts the required quantiles for the calibration plot, based on the stored dataframe of <code>calibrationQuantiles</code>, the outcome of interest and the hospital under consideration.</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Extraction of calibration quantiles works&quot;,
@@ -465,12 +468,15 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🎊</code></pre>
+<pre><code>## Test passed 😸</code></pre>
 </div>
 <div id="testing-server-functions" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Testing server functions</h1>
 <p>Here we perform a set of unit tests to ensure that server-side operations work the way they should. We start by looking at calculations tasks run within the server function.</p>
-<p>First, the <code>currentInputData</code> reactive dataframe should contain all the provided inputs.</p>
+<div id="interactivity" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Interactivity</h2>
+<p>Interactive values, are server-side variables that depend on the input and, therefore, need to be updated whenever the user alters their selection.</p>
+<p>First, the <code>currentInputData</code> reactive dataframe should contain all the provided inputs and should update accordingly, when these are changed.</p>
 <pre class="r"><code>shiny::testServer(
     expr = {
         session$setInputs(
@@ -530,7 +536,79 @@ summary {
     }
 )</code></pre>
 <pre><code>## Test passed 😀
-## Test passed 🥳</code></pre>
+## Test passed 🥇</code></pre>
+<p>Next, we do the same for the variables that keep track of the current prediction and its placement, relevant to the overall predicted risk fifths, for both outcomes (mortality and ICU admission).</p>
+<pre class="r"><code>shiny::testServer(
+    expr = {
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 19,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        # Is the initial input admissible?
+        testthat::expect_equal(
+            admissibleInput(),
+            TRUE
+        )
+        
+        # Is the prediction for the starting values correct?
+        testthat::expect_equal(
+            currentPrediction(),
+            list(
+                mortality = 4.8,
+                icu       = 13.3
+            )
+        )
+        
+        # Is the predicted mortality risk assigned to the correct stratum of risk?
+        testthat::expect_equal(
+            riskFifthMortality(),
+            4
+        )
+        
+        # Is the predicted ICU risk assigned to the correct stratum of risk?
+        testthat::expect_equal(
+            riskFifthIcu(),
+            4
+        )
+        
+        
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 19,
+            ldh                       = 2440,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;The reactive input dataframe is updated&quot;,
+            {
+                testthat::expect_equal(
+                    currentInputData(),
+                    data.frame(
+                        age             = 70,
+                        respiratoryRate = 19,
+                        crp             = 48,
+                        ldh             = 2440,
+                        albumin         = 39,
+                        urea            = 6.5
+                    )
+                )
+            }
+        )
+        
+    }
+)</code></pre>
+<pre><code>## Test passed 🎊</code></pre>
+</div>
 </div>
 
 
