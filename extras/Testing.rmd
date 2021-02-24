@@ -25,6 +25,17 @@ This set of tests evaluates the functions used to support the server function. T
 Function `createModelMatrix` creates the model matrix based on a set of covariates and a list of transformations.
 
 ```{r}
+
+transformationsMortality <- list(
+	age             = identity,
+	respiratoryRate = log,
+	crp             = log,
+	ldh             = log,
+	albumin         = log,
+	urea            = log
+)
+
+
 testthat::test_that(
 	"Creation of model matrix works",
 	{

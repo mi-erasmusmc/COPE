@@ -38,9 +38,9 @@ shiny::shinyUI(
 					icon    = shiny::icon("calculator")
 				),
 				shinydashboard::menuItem(
-					tabName = "description",
-					text    = "Description",
-					icon    = shiny::icon("align-justify")
+					tabName = "about",
+					text    = "About",
+					icon    = shiny::icon("info-circle")
 				),
 				shinydashboard::menuItem(
 					tabName = "population",
@@ -64,7 +64,7 @@ shiny::shinyUI(
 			shinyalert::useShinyalert(),
 			shinydashboard::tabItems(
 				shinydashboard::tabItem(
-					tabName = "description",
+					tabName = "about",
 					shiny::includeHTML(
 						"html/description_abstract.html"
 					)

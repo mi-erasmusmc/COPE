@@ -41,7 +41,7 @@ shiny::shinyServer(
 				if (!admissibleInput()) {
 					shinyalert(
 						title = "Non-admissible input",
-						shiny::includeHTML(here::here("html/admissibleInput.html")),
+						shiny::includeHTML("html/admissibleInput.html"),
 						type = "error",
 						html = TRUE,
 						size = "m",
@@ -222,16 +222,16 @@ shiny::shinyServer(
 				)
 				
 				paste(
-					shiny::includeHTML(here::here("html/calculation_result_explanation1.html")),
+					shiny::includeHTML("html/calculation_result_explanation1.html"),
 					shiny::HTML(paste0(prediction$mortality, "%.")),
-					shiny::includeHTML(here::here("html/calculation_result_explanation2.html")),
+					shiny::includeHTML("html/calculation_result_explanation2.html"), 
 					shiny::HTML(riskLevelLabels[riskFifthMortality() - 1]),
-					shiny::includeHTML(here::here("html/calculation_result_explanation3.html")),
-					shiny::includeHTML(here::here("html/calculation_result_explanation4.html")),
+					shiny::includeHTML("html/calculation_result_explanation3.html"),
+					shiny::includeHTML("html/calculation_result_explanation4.html"), 
 					shiny::HTML(paste0(prediction$icu, "%.")),
-					shiny::includeHTML(here::here("html/calculation_result_explanation2.html")),
+					shiny::includeHTML("html/calculation_result_explanation2.html"),
 					shiny::HTML(riskLevelLabels[riskFifthIcu() - 1]),
-					shiny::includeHTML(here::here("html/calculation_result_explanation6.html"))
+					shiny::includeHTML("html/calculation_result_explanation6.html")
 				)
 			}
 		)
@@ -452,7 +452,7 @@ shiny::shinyServer(
 		)
 		
 		output$disclaimer <- shiny::renderText(
-			shiny::includeHTML(here::here("html/disclaimer.html"))
+			shiny::includeHTML("html/disclaimer.html")
 		)
 	}
 )
