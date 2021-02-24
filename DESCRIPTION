@@ -14,6 +14,8 @@ RoxygenNote: 7.1.0
 Imports:
     shiny,
     dplyr,
+    pillar,
+    broom,
     highcharter,
     plotly,
     data.table,
@@ -24,9 +26,7 @@ Imports:
     shinyWidgets,
     shinyalert,
     shinyBS,
-    shinycssloaders,
-    pillar,
-    broom
+    shinycssloaders
 Suggests:
     testthat
 
