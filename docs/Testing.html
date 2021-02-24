@@ -230,7 +230,7 @@ color: #d14;
   div.column{display: inline-block; vertical-align: top; width: 50%;}
   div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   ul.task-list{list-style: none;}
-      </style>
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -276,6 +276,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -418,7 +419,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 😀</code></pre>
+<pre><code>## Test passed</code></pre>
 <p>Function <code>createLinearPredictor</code> calculates the linear predictor of a prediction based on a provided model matrix, a vector of <span class="math inline">\(\beta\)</span> coefficients and an intercept</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Creation of linear predictor works&quot;,
@@ -433,7 +434,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🥳</code></pre>
+<pre><code>## Test passed</code></pre>
 <p>Function <code>logisticProbability</code> calculates the logistic probability (%) based on a provided linear predictor value.</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Logistic probability calculation from linear predictor works&quot;,
@@ -444,7 +445,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🥳</code></pre>
+<pre><code>## Test passed</code></pre>
 <p>Finally, function <code>extractQuantiles</code> extracts the required quantiles for the calibration plot, based on the stored dataframe of <code>calibrationQuantiles</code>, the outcome of interest and the hospital under consideration.</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Extraction of calibration quantiles works&quot;,
@@ -469,7 +470,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🥇</code></pre>
+<pre><code>## Test passed</code></pre>
 </div>
 <div id="testing-server-functions" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Testing server functions</h1>
@@ -536,8 +537,8 @@ summary {
         
     }
 )</code></pre>
-<pre><code>## Test passed 🥳
-## Test passed 🌈</code></pre>
+<pre><code>## Test passed 
+## Test passed</code></pre>
 <p>Next, we do the same for the variables that keep track of the current prediction and its placement, relevant to the overall predicted risk fifths, for both outcomes (mortality and ICU admission).The first set of tests evaluates if the initial input is handled appropriately and the second set evaluates if the values are updated correctly.</p>
 <pre class="r"><code>shiny::testServer(
     expr = {
@@ -619,12 +620,12 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 😸
-## Test passed 🥳
-## Test passed 🥇
-## Test passed 🌈
-## Test passed 🥇
-## Test passed 🎉</code></pre>
+<pre><code>## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed</code></pre>
 </div>
 <div id="handling-input-admissibility" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> Handling input admissibility</h2>
@@ -1014,24 +1015,24 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 😀
-## Test passed 😸
-## Test passed 🥇
-## Test passed 😸
-## Test passed 😸
-## Test passed 🎉
-## Test passed 🥇
-## Test passed 😀
-## Test passed 🎊
-## Test passed 😀
-## Test passed 🌈
-## Test passed 🥇
-## Test passed 🎉
-## Test passed 😀
-## Test passed 😸
-## Test passed 🌈
-## Test passed 😸
-## Test passed 🥳</code></pre>
+<pre><code>## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed 
+## Test passed</code></pre>
 </div>
 </div>
 
@@ -1044,7 +1045,7 @@ summary {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
