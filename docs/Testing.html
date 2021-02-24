@@ -397,6 +397,7 @@ summary {
 <li><a href="#testing-server-functions"><span class="toc-section-number">2</span> Testing server functions</a>
 <ul>
 <li><a href="#interactivity"><span class="toc-section-number">2.1</span> Interactivity</a></li>
+<li><a href="#handling-input-admissibility"><span class="toc-section-number">2.2</span> Handling input admissibility</a></li>
 </ul></li>
 </ul>
 </div>
@@ -417,7 +418,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🎊</code></pre>
+<pre><code>## Test passed 😀</code></pre>
 <p>Function <code>createLinearPredictor</code> calculates the linear predictor of a prediction based on a provided model matrix, a vector of <span class="math inline">\(\beta\)</span> coefficients and an intercept</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Creation of linear predictor works&quot;,
@@ -432,7 +433,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🎊</code></pre>
+<pre><code>## Test passed 🥳</code></pre>
 <p>Function <code>logisticProbability</code> calculates the logistic probability (%) based on a provided linear predictor value.</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Logistic probability calculation from linear predictor works&quot;,
@@ -443,7 +444,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🥇</code></pre>
+<pre><code>## Test passed 🥳</code></pre>
 <p>Finally, function <code>extractQuantiles</code> extracts the required quantiles for the calibration plot, based on the stored dataframe of <code>calibrationQuantiles</code>, the outcome of interest and the hospital under consideration.</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Extraction of calibration quantiles works&quot;,
@@ -468,7 +469,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 😸</code></pre>
+<pre><code>## Test passed 🥇</code></pre>
 </div>
 <div id="testing-server-functions" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Testing server functions</h1>
@@ -535,9 +536,9 @@ summary {
         
     }
 )</code></pre>
-<pre><code>## Test passed 😀
-## Test passed 🥇</code></pre>
-<p>Next, we do the same for the variables that keep track of the current prediction and its placement, relevant to the overall predicted risk fifths, for both outcomes (mortality and ICU admission).</p>
+<pre><code>## Test passed 🥳
+## Test passed 🌈</code></pre>
+<p>Next, we do the same for the variables that keep track of the current prediction and its placement, relevant to the overall predicted risk fifths, for both outcomes (mortality and ICU admission).The first set of tests evaluates if the initial input is handled appropriately and the second set evaluates if the values are updated correctly.</p>
 <pre class="r"><code>shiny::testServer(
     expr = {
         session$setInputs(
@@ -550,38 +551,132 @@ summary {
             calculatePredictionButton = &quot;click&quot;
         )
         
-        # Is the initial input admissible?
-        testthat::expect_equal(
-            admissibleInput(),
-            TRUE
-        )
-        
-        # Is the prediction for the starting values correct?
-        testthat::expect_equal(
-            currentPrediction(),
-            list(
-                mortality = 4.8,
-                icu       = 13.3
+        testthat::test_that(
+            &quot;Is the prediction for the starting values correct?&quot;,
+            testthat::expect_equal(
+                currentPrediction(),
+                list(
+                    mortality = 4.8,
+                    icu       = 13.3
+                )
             )
         )
         
-        # Is the predicted mortality risk assigned to the correct stratum of risk?
-        testthat::expect_equal(
-            riskFifthMortality(),
-            4
+        testthat::test_that(
+            &quot;Is the predicted mortality risk assigned to the correct stratum of risk?&quot;,
+            testthat::expect_equal(
+                riskFifthMortality(),
+                4
+            )
         )
         
         # Is the predicted ICU risk assigned to the correct stratum of risk?
-        testthat::expect_equal(
-            riskFifthIcu(),
-            4
+        testthat::test_that(
+            &quot;Is the predicted mortality risk assigned to the correct stratum of risk?&quot;,
+            testthat::expect_equal(
+                riskFifthIcu(),
+                4
+            )
         )
         
         
         session$setInputs(
-            age                       = 70,
+            age                       = 60,
+            respiratoryRate           = 30,
+            ldh                       = 400,
+            crp                       = 100,
+            albumin                   = 50,
+            urea                      = 10,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Current prediction is updated&quot;,
+            testthat::expect_equal(
+                currentPrediction(),
+                list(
+                    mortality = 10.8,
+                    icu       = 20.6
+                )
+            )
+        )
+        
+        testthat::test_that(
+            &quot;Is the predicted mortality risk assigned to the correct stratum of risk?&quot;,
+            testthat::expect_equal(
+                riskFifthMortality(),
+                5
+            )
+        )
+        
+        # Is the predicted ICU risk assigned to the correct stratum of risk?
+        testthat::test_that(
+            &quot;Is the predicted mortality risk assigned to the correct stratum of risk?&quot;,
+            testthat::expect_equal(
+                riskFifthIcu(),
+                5
+            )
+        )
+    }
+)</code></pre>
+<pre><code>## Test passed 😸
+## Test passed 🥳
+## Test passed 🥇
+## Test passed 🌈
+## Test passed 🥇
+## Test passed 🎉</code></pre>
+</div>
+<div id="handling-input-admissibility" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Handling input admissibility</h2>
+<p>There are constraints on the input a user can provide. More specifically, all inputs need to be numeric and should be between the following limits:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Predictor</th>
+<th align="right">Minimum</th>
+<th align="right">Maximum</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Age</td>
+<td align="right">0</td>
+<td align="right">100</td>
+</tr>
+<tr class="even">
+<td align="left">Respiratory rate</td>
+<td align="right">10</td>
+<td align="right">60</td>
+</tr>
+<tr class="odd">
+<td align="left">LDH</td>
+<td align="right">50</td>
+<td align="right">4000</td>
+</tr>
+<tr class="even">
+<td align="left">CRP</td>
+<td align="right">1</td>
+<td align="right">500</td>
+</tr>
+<tr class="odd">
+<td align="left">Albumin</td>
+<td align="right">10</td>
+<td align="right">60</td>
+</tr>
+<tr class="even">
+<td align="left">Urea</td>
+<td align="right">1</td>
+<td align="right">80</td>
+</tr>
+</tbody>
+</table>
+<p>For each input we test ensure that input is accepted when the above rules are followed and that it is ruled as non-admissible if the submitted number is outside the boundaries or if it is a character string.</p>
+<pre class="r"><code>shiny::testServer(
+    expr = {
+        session$setInputs(
+            age                       = -1,
             respiratoryRate           = 19,
-            ldh                       = 2440,
+            ldh                       = 244,
             crp                       = 48,
             albumin                   = 39,
             urea                      = 6.5,
@@ -589,25 +684,354 @@ summary {
         )
         
         testthat::test_that(
-            &quot;The reactive input dataframe is updated&quot;,
-            {
-                testthat::expect_equal(
-                    currentInputData(),
-                    data.frame(
-                        age             = 70,
-                        respiratoryRate = 19,
-                        crp             = 48,
-                        ldh             = 2440,
-                        albumin         = 39,
-                        urea            = 6.5
-                    )
-                )
-            }
+            &quot;Non admissible age (lower)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
         )
         
+        # age above admissible input
+        session$setInputs(
+            age                       = 101,
+            respiratoryRate           = 19,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible age (higher)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # age as character input
+        session$setInputs(
+            age                       = &quot;seventy&quot;,
+            respiratoryRate           = 19,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible age (character)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # respiratory rate below admissible input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 9,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible respiratory rate (lower)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # respiratory rate above admissible input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 61,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible respiratory rate (higher)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # respiratory rate as character input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = &quot;ten&quot;,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible respiratory rate (character)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # ldh above admissible input    
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 4001,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible LDH (higher)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # ldh below admissible input    
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 49,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible LDH (lower)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        # ldh as character input    
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = &quot;two hundred&quot;,
+            crp                       = 48,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible LDH (character)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # crp below admissible input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 244,
+            crp                       = 0,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible CRP (lower)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # crp above admissible input    
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 244,
+            crp                       = 501,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible CRP (higher)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # crp as character input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 244,
+            crp                       = &quot;two hundred&quot;,
+            albumin                   = 39,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible CRP (character)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # albumin below admissible input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 9,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible albumin (lower)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # albumin above admissible input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 61,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible albumin (higher)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # albumin as character input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = &quot;twenty&quot;,
+            urea                      = 6.5,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible albumin (character)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # urea below admissible input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 20,
+            urea                      = 0,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible albumin (lower)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # urea above admissible input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 20,
+            urea                      = 81,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible albumin (higher)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
+        
+        # urea as character input
+        session$setInputs(
+            age                       = 70,
+            respiratoryRate           = 45,
+            ldh                       = 244,
+            crp                       = 48,
+            albumin                   = 20,
+            urea                      = &quot;four&quot;,
+            calculatePredictionButton = &quot;click&quot;
+        )
+        
+        testthat::test_that(
+            &quot;Non admissible albumin (character)&quot;,
+            testthat::expect_equal(
+                admissibleInput(),
+                FALSE
+            )
+        )
     }
 )</code></pre>
-<pre><code>## Test passed 🎊</code></pre>
+<pre><code>## Test passed 😀
+## Test passed 😸
+## Test passed 🥇
+## Test passed 😸
+## Test passed 😸
+## Test passed 🎉
+## Test passed 🥇
+## Test passed 😀
+## Test passed 🎊
+## Test passed 😀
+## Test passed 🌈
+## Test passed 🥇
+## Test passed 🎉
+## Test passed 😀
+## Test passed 😸
+## Test passed 🌈
+## Test passed 😸
+## Test passed 🥳</code></pre>
 </div>
 </div>
 

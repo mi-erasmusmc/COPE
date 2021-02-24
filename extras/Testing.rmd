@@ -189,7 +189,6 @@ shiny::testServer(
 			calculatePredictionButton = "click"
 		)
 		
-		# Is the prediction for the starting values correct?
 		testthat::test_that(
 			"Is the prediction for the starting values correct?",
 			testthat::expect_equal(
@@ -201,16 +200,21 @@ shiny::testServer(
 			)
 		)
 		
-		# Is the predicted mortality risk assigned to the correct stratum of risk?
-		testthat::expect_equal(
-			riskFifthMortality(),
-			4
+		testthat::test_that(
+			"Is the predicted mortality risk assigned to the correct stratum of risk?",
+			testthat::expect_equal(
+				riskFifthMortality(),
+				4
+			)
 		)
 		
 		# Is the predicted ICU risk assigned to the correct stratum of risk?
-		testthat::expect_equal(
-			riskFifthIcu(),
-			4
+		testthat::test_that(
+			"Is the predicted mortality risk assigned to the correct stratum of risk?",
+			testthat::expect_equal(
+				riskFifthIcu(),
+				4
+			)
 		)
 		
 		
@@ -234,7 +238,385 @@ shiny::testServer(
 				)
 			)
 		)
+		
+		testthat::test_that(
+			"Is the predicted mortality risk assigned to the correct stratum of risk?",
+			testthat::expect_equal(
+				riskFifthMortality(),
+				5
+			)
+		)
+		
+		# Is the predicted ICU risk assigned to the correct stratum of risk?
+		testthat::test_that(
+			"Is the predicted mortality risk assigned to the correct stratum of risk?",
+			testthat::expect_equal(
+				riskFifthIcu(),
+				5
+			)
+		)
 	}
 )
 
+```
+
+## Handling input admissibility
+There are constraints on the input a user can provide. More specifically, all inputs need to be numeric and should be between the following limits:
+
+| Predictor        | Minimum | Maximum |
+|:-----------------|--------:|--------:|
+| Age              | 0       | 100     |
+| Respiratory rate | 10      | 60      |
+| LDH              | 50      | 4000    |
+| CRP              | 1       | 500     |
+| Albumin          | 10      | 60      |
+| Urea             | 1       | 80      |
+
+
+For each input we test ensure that input is accepted when the above rules are followed and that it is ruled as non-admissible if the submitted number is outside the boundaries or if it is a character string.
+
+```{r}
+shiny::testServer(
+	expr = {
+		session$setInputs(
+			age                       = -1,
+			respiratoryRate           = 19,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible age (lower)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# age above admissible input
+		session$setInputs(
+			age                       = 101,
+			respiratoryRate           = 19,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible age (higher)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# age as character input
+		session$setInputs(
+			age                       = "seventy",
+			respiratoryRate           = 19,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible age (character)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# respiratory rate below admissible input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 9,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible respiratory rate (lower)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# respiratory rate above admissible input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 61,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible respiratory rate (higher)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# respiratory rate as character input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = "ten",
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible respiratory rate (character)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# ldh above admissible input	
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 4001,
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible LDH (higher)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# ldh below admissible input	
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 49,
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible LDH (lower)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		# ldh as character input	
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = "two hundred",
+			crp                       = 48,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible LDH (character)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# crp below admissible input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 244,
+			crp                       = 0,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible CRP (lower)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# crp above admissible input	
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 244,
+			crp                       = 501,
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible CRP (higher)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# crp as character input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 244,
+			crp                       = "two hundred",
+			albumin                   = 39,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible CRP (character)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# albumin below admissible input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 9,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible albumin (lower)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# albumin above admissible input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 61,
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible albumin (higher)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# albumin as character input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = "twenty",
+			urea                      = 6.5,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible albumin (character)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# urea below admissible input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 20,
+			urea                      = 0,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible albumin (lower)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# urea above admissible input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 20,
+			urea                      = 81,
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible albumin (higher)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+		
+		# urea as character input
+		session$setInputs(
+			age                       = 70,
+			respiratoryRate           = 45,
+			ldh                       = 244,
+			crp                       = 48,
+			albumin                   = 20,
+			urea                      = "four",
+			calculatePredictionButton = "click"
+		)
+		
+		testthat::test_that(
+			"Non admissible albumin (character)",
+			testthat::expect_equal(
+				admissibleInput(),
+				FALSE
+			)
+		)
+	}
+)
 ```
