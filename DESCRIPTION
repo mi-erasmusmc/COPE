@@ -24,7 +24,8 @@ Imports:
     shinyWidgets,
     shinyalert,
     shinyBS,
-    shinycssloaders
+    shinycssloaders,
+    broom
 Suggests:
     testthat
 

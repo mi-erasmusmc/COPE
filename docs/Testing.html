@@ -11,7 +11,7 @@
 
 <meta name="author" content="Alexandros Rekkas" />
 
-<meta name="date" content="2021-02-22" />
+<meta name="date" content="2021-02-24" />
 
 <title>Testing COPE</title>
 
@@ -387,7 +387,7 @@ summary {
 
 <h1 class="title toc-ignore">Testing COPE</h1>
 <h4 class="author">Alexandros Rekkas</h4>
-<h4 class="date">2021-02-22</h4>
+<h4 class="date">2021-02-24</h4>
 
 </div>
 
@@ -414,7 +414,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 😀</code></pre>
+<pre><code>## Test passed 🥇</code></pre>
 <p>Function <code>createLinearPredictor</code> calculates the linear predictor of a prediction based on a provided model matrix, a vector of <span class="math inline">\(\beta\)</span> coefficients and an intercept</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Creation of linear predictor works&quot;,
@@ -440,7 +440,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🥇</code></pre>
+<pre><code>## Test passed 😀</code></pre>
 <p>Finally, function <code>extractQuantiles</code> extracts the required quantiles for the calibration plot, based on the stored dataframe of <code>calibrationQuantiles</code>, the outcome of interest and the hospital under consideration.</p>
 <pre class="r"><code>testthat::test_that(
     &quot;Extraction of calibration quantiles works&quot;,
@@ -465,7 +465,7 @@ summary {
         )
     }
 )</code></pre>
-<pre><code>## Test passed 🥇</code></pre>
+<pre><code>## Test passed 🎊</code></pre>
 </div>
 <div id="testing-server-functions" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Testing server functions</h1>
@@ -529,8 +529,8 @@ summary {
         
     }
 )</code></pre>
-<pre><code>## Test passed 🥇
-## Test passed 🎊</code></pre>
+<pre><code>## Test passed 😀
+## Test passed 🥳</code></pre>
 </div>
 
 

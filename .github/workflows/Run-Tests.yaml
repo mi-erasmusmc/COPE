@@ -3,11 +3,13 @@ on:
     branches:
       - master
       - develop
+      - testing
       - issue_9
   pull_request:
     branches:
       - master
       - develop
+      - testing
       - issue_9
 
 name: run-tests
