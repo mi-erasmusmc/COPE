@@ -11,7 +11,7 @@
 
 <meta name="author" content="Alexandros Rekkas" />
 
-<meta name="date" content="2021-02-24" />
+<meta name="date" content="2021-02-25" />
 
 <title>Testing COPE</title>
 
@@ -388,7 +388,7 @@ summary {
 
 <h1 class="title toc-ignore">Testing COPE</h1>
 <h4 class="author">Alexandros Rekkas</h4>
-<h4 class="date">2021-02-24</h4>
+<h4 class="date">2021-02-25</h4>
 
 </div>
 
@@ -407,7 +407,17 @@ summary {
 <h1><span class="header-section-number">1</span> Testing supporting functions</h1>
 <p>This set of tests evaluates the functions used to support the server function. These functions are used for calculating relevant quantities, e.g. 28-day mortality risk.</p>
 <p>Function <code>createModelMatrix</code> creates the model matrix based on a set of covariates and a list of transformations.</p>
-<pre class="r"><code>testthat::test_that(
+<pre class="r"><code>transformationsMortality &lt;- list(
+    age             = identity,
+    respiratoryRate = log,
+    crp             = log,
+    ldh             = log,
+    albumin         = log,
+    urea            = log
+)
+
+
+testthat::test_that(
     &quot;Creation of model matrix works&quot;,
     {
         testthat::expect_equal(

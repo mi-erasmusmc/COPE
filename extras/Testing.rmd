@@ -123,7 +123,7 @@ Interactive values, are server-side variables that depend on the input and, ther
 First, the `currentInputData` reactive dataframe should contain all the provided inputs and should update accordingly, when these are changed.
 
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 shiny::testServer(
 	expr = {
 		session$setInputs(
