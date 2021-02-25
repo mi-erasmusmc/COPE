@@ -181,7 +181,7 @@ shiny::shinyServer(
 			}
 		)
 		
-		output$calculationPlotIcu <- highcharter::renderHighchart(
+		output$calculationPlotIcu <- plotly::renderPlotly(
 			{
 				shiny::req(
 					admissibleInput()
