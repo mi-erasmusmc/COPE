@@ -2,7 +2,6 @@ library(dplyr)
 library(shinyBS)
 library(shinyalert)
 library(data.table)
-library(highcharter)
 
 # source("R/Calculations.R")
 # source("R/Plotting.R")
