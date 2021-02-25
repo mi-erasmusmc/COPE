@@ -14,7 +14,6 @@ RoxygenNote: 7.1.0
 Imports:
     shiny,
     dplyr,
-    highcharter,
     plotly,
     data.table,
     here,

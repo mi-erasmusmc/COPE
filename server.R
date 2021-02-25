@@ -129,7 +129,7 @@ shiny::shinyServer(
 			}
 		)
 		
-		output$calculationPlotMortality <- highcharter::renderHighchart(
+		output$calculationPlotMortality <- plotly::renderPlotly(
 			{
 				shiny::req(admissibleInput())
 				

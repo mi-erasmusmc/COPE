@@ -224,7 +224,7 @@ shiny::shinyUI(
 							height = "320px",
 							shinycssloaders::withSpinner(
 								type = 4,
-								highcharter::highchartOutput(
+								plotly::plotlyOutput(
 									outputId = "calculationPlotMortality",
 									height = "250px"
 								)
@@ -239,7 +239,7 @@ shiny::shinyUI(
 							height = "320px",
 							shinycssloaders::withSpinner(
 								type = 4,
-								highcharter::highchartOutput(
+								plotly::plotlyOutput(
 									outputId = "calculationPlotIcu",
 									height   = "250px"
 								)

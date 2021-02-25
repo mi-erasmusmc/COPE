@@ -56,117 +56,85 @@ plotRiskPrediction <- function(
 	rangeMax
 ) {
 	
-	riskFifthsExtended <- sort(
-		c(
-			0, riskFifths, rangeMax
+	riskLevels <- c(
+		"Lowest", "Lower",
+		"Intermediate",
+		"Higher", "Highest"
+	)
+	
+	plotly::plot_ly(
+		data = data.frame(
+			x = 0, 
+			prediction = prediction,
+			width = .4
 		)
-	)
-	
-	
-	
-	riskFifthsExtended <- diff(riskFifthsExtended)
-	
-	cols <- c(
-		rev(colorMap$color), 
-		"#3B6AA0"
-	)
-	
-	highcharter::highchart() %>%
-		highcharter::hc_add_series(
-			name = "Highest risk",
-			type = "area",
-			data = rep(riskFifthsExtended[5], 3)
-		) %>%
-		highcharter::hc_add_series(
-			name = "Higher risk",
-			type = "area",
-			data = rep(riskFifthsExtended[4], 3)
-		) %>%
-		highcharter::hc_add_series(
-			name = "Intermediate risk",
-			type = "area",
-			data = rep(riskFifthsExtended[3], 3)
-		) %>%
-		highcharter::hc_add_series(
-			name = "Lower risk",
-			type = "area",
-			data = rep(riskFifthsExtended[2], 3)
-		) %>%
-		highcharter::hc_add_series(
-			name = "Lowest risk",
-			type = "area",
-			data = rep(riskFifthsExtended[1], 3)
-		) %>%
-		highcharter::hc_add_series(
-			name = "Predicted risk",
-			data = data.frame(
-				x = 1,
-				y = prediction
-			),
-			type = "column",
-			highcharter::hcaes(
-				x = x,
-				y = y
+	) %>%
+		plotly::add_bars(
+			x = ~x,
+			y = ~prediction,
+			width = ~width,
+			text = ~prediction,
+			textposition = "outside",
+			texttemplate = "<b>%{text}%</b>",
+			textfont = list(size = 18),
+			hoverinfo = "text",
+			hovertext = paste(
+				"<b>Risk ranking:</b>\n",
+				riskLevels[currentRiskFifth - 1]
 			)
 		) %>%
-		highcharter::hc_plotOptions(
-			area = list(
-				stacking  = "normal",
-				lineWidth = 0,
-				marker = list(
-					enabled   = FALSE,
-					lineWidth = 0,
-					lineColor = "#ffffff"
-				),
-				fillOpacity = .4
+		plotly::layout(
+			xaxis = list(
+				visible = FALSE
 			),
-			column = list(
-				borderColor = "#000000",
-				borderWidth = 2,
-				dataLabels  = list(
-					enabled         = TRUE,
-					# backgroundColor = "#f7f7f7",
-					# borderColor     = colorMap$color[currentRiskFifth - 1],
-					borderRadius    = 0,
-					# borderWidth     = 4,
-					format          = '{y} %',
-					# verticalAlign   = "top",
-					inside          = FALSE,
-					animation       = list(defer = 2000),
-					style           = list(
-						color       = '#000000',
-						textOutline = FALSE,
-						fontSize    = "20px",
-						fontWeight  = "bold"
-					)
+			yaxis = list(
+				range = c(0, rangeMax),
+				title = ""
+			),
+			shapes = list(
+				addRectangle(
+					y0        = 0,
+					y1        = riskFifths[1],
+					x0        = -.5,
+					x1        = .5,
+					fillcolor = colorMap$color[1],
+					layer = "below"
+				),
+				addRectangle(
+					y0        = riskFifths[1],
+					y1        = riskFifths[2],
+					x0        = -.5,
+					x1        = .5,
+					fillcolor = colorMap$color[2],
+					layer = "below"
+				),
+				addRectangle(
+					y0        = riskFifths[2],
+					y1        = riskFifths[3],
+					x0        = -.5,
+					x1        = .5,
+					fillcolor = colorMap$color[3],
+					layer = "below"
+				),
+				addRectangle(
+					y0        = riskFifths[3],
+					y1        = riskFifths[4],
+					x0        = -.5,
+					x1        = .5,
+					fillcolor = colorMap$color[4],
+					layer = "below"
+				),
+				addRectangle(
+					y0        = riskFifths[4],
+					y1        = rangeMax,
+					x0        = -.5,
+					x1        = .5,
+					fillcolor = colorMap$color[5],
+					layer = "below"
 				)
 			)
-		) %>%
-		highcharter::hc_tooltip(
-			formatter = highcharter::JS(
-				"function () {
-            return '<b>' + this.series.name + '</b>';
-        }"
-			),
-			hideDelay     = 100,
-			followPointer = TRUE,
-			shared        = FALSE
-		) %>%
-		highcharter::hc_xAxis(
-			max               = 1.5,
-			min               = .5,
-			categories        = c(0, 1, 2),
-			tickmarkPlacement = "on",
-			labels            = list(enabled = FALSE)
-		) %>%
-		highcharter::hc_yAxis(
-			max   = rangeMax,
-			title = list(text = "Probability (%)")
-		) %>%
-		highcharter::hc_colors(cols) %>%
-		highcharter::hc_legend(
-			enabled = FALSE
 		)
+	
 	
 }
 
@@ -280,8 +248,8 @@ plotCalibration <- function(
 					),
 					sep = "\n"
 				),
-				x = .42,
-				y = .08,
+				x           = .42,
+				y           = .08,
 				bgcolor     = "white",
 				opacity     = .6,
 				borderwidth = 1,
