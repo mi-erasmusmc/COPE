@@ -23,7 +23,8 @@ Imports:
     shinyWidgets,
     shinyalert,
     shinyBS,
-    shinycssloaders
+    shinycssloaders,
+    shinydashboardPlus
 Suggests:
     testthat
 
