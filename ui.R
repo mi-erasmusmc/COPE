@@ -16,6 +16,20 @@ shiny::shinyUI(
 				div(
 					tags$a(
 						img(
+							src    = "ce_logo.png",
+							title  = "CE",
+							height = "40px",
+							width = "50px"
+						)
+					)
+					# style = "padding-top:10px;padding-bottom:0px;padding-right:2px"
+				),
+				class = "dropdown"
+			),
+			tags$li(
+				div(
+					tags$a(
+						img(
 							src    = "EMC.jpg",
 							title  = "Erasmus MC",
 							height = "50px",
@@ -55,6 +69,11 @@ shiny::shinyUI(
 					tabName = "performance",
 					text    = "Performance",
 					icon    = shiny::icon("tasks")
+				),
+				shinydashboard::menuItem(
+					tabName = "supplier",
+					text    = "Supplier",
+					icon    = shiny::icon("tools")
 				)
 			)
 		),
@@ -62,6 +81,12 @@ shiny::shinyUI(
 			shinyWidgets::setShadow(class = "box"),
 			shinyalert::useShinyalert(),
 			shinydashboard::tabItems(
+				shinydashboard::tabItem(
+					tabName = "supplier",
+					shiny::includeHTML(
+						"html/supplier.html"
+					)
+				),
 				shinydashboard::tabItem(
 					tabName = "about",
 					shiny::includeHTML(
