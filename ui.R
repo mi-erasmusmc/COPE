@@ -6,8 +6,9 @@ shiny::shinyUI(
 			title = "COPE",
 			tags$li(
 				tags$div(
-					"Covid Outcome Prediction in the Emergency Department",
-					style = "padding-top:14px;font-style:italic;
+					p("Covid Outcome Prediction"),
+					p("in the Emergency Department"),
+					style = "padding-top:12px;font-style:italic;line-height:6px;
 					padding-right:10px;font-size: min(3vw, 14px)"
 				),
 				class = "dropdown"

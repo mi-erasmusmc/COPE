@@ -133,6 +133,9 @@ plotRiskPrediction <- function(
 					layer = "below"
 				)
 			)
+		) %>%
+		plotly::config(
+			displayModeBar = FALSE
 		)
 	
 	
@@ -278,5 +281,8 @@ plotCalibration <- function(
 				range = c(-.01, .5)
 			),
 			showlegend = FALSE
+		) %>%
+		plotly::config(
+			displayModeBar = FALSE
 		)
 }
