@@ -91,6 +91,10 @@ shiny::shinyUI(
 					tabName = "about",
 					shiny::includeHTML(
 						"html/description_abstract.html"
+					),
+					shiny::downloadButton(
+						"manual",
+						label = "User manual"
 					)
 				),
 				shinydashboard::tabItem(

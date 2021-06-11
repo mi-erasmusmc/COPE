@@ -129,6 +129,13 @@ shiny::shinyServer(
 			}
 		)
 		
+		output$manual <- downloadHandler(
+			filename = "manual.pdf",
+			content = function(file) {
+				file.copy("www/manual.pdf", file)
+			}
+		)
+		
 		output$calculationPlotMortality <- plotly::renderPlotly(
 			{
 				shiny::req(admissibleInput())
